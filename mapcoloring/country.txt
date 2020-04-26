@@ -1,0 +1,147 @@
+neighbors[countries[0]] = ["PR","UR","AR","BO","PE","CO","VN","GY","SU","GF"]
+neighbors[countries[1]] = ["BR","AR","BO"]
+neighbors[countries[2]] = ["BR","AR"]
+neighbors[countries[3]] = ["BR","UR","PR","CH","BO"]
+neighbors[countries[4]] = ["AR","BO","PE"]
+neighbors[countries[5]] = ["PR","AR","CH","BR","PE"]
+neighbors[countries[6]] = ["BO","CH","EC","BR","CO"]
+neighbors[countries[7]] = ["PR","CO"]
+neighbors[countries[8]] = ["EC","PE","BR","VN"]
+neighbors[countries[9]] = ["CO","BR","GY"]
+neighbors[countries[10]] = ["VN","BR","SU"]
+neighbors[countries[11]] = ["GY","BR","GF"]
+neighbors[countries[12]] = ["SU","BR"]
+
+
+
+
+        
+        
+"""    
+countries = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT',
+    'MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR',
+    'SC','SP','SE','TO']
+
+neighbors = {countries[0] : ['AM','RO']}
+neighbors[countries[1]] = ['PE','SE','BA']
+neighbors[countries[2]] = ['PA']
+neighbors[countries[3]] = ['AC','RR','RO','PA','AP']
+neighbors[countries[4]] = ['TO','GO','MA','PI','AL','SE','PE','MG','ES']
+neighbors[countries[5]] = ['RN','PB','PE','PI']
+neighbors[countries[6]] = ['GO']
+neighbors[countries[7]] = ['MG','BA','RJ']
+neighbors[countries[8]] = ['DF','MG','BA','TO','MT','MS']
+neighbors[countries[9]] = ['PI','TO','PA']
+neighbors[countries[10]] = ['PA','AM','RO','TO','GO','MS']
+neighbors[countries[11]] = ['MT','GO','SP','MG','PR']
+neighbors[countries[12]] = ['']#mg
+"""
+
+
+
+
+
+
+
+
+
+
+
+char* countries_neighbors[NUMBER_OF_NODES][MAX_NEIGHBORS] = {{"PR","UR","AR","BO","PE","CO","VN","GY","SU","GF"},{"BR","AR","BO"},{"BR","AR"},
+																{"BR","UR","PR","CH","BO"},{"AR","BO","PE"},{"PR","AR","CH","BR","PE"},
+																{"BO","CH","EC","BR","CO"},{"PR","CO"},{"EC","PE","BR","VN"},{"CO","BR","GY"},
+																{"VN","BR","SU"},{"GY","BR","GF"},{"SU","BR"}};
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+
+#define MAX 30
+#define MAX_NEIGHBORS 10
+#define NUMBER_OF_NODES 13
+
+typedef struct Node{
+	int degree;
+	char name[MAX];
+	int color;
+	int visited;
+	struct Node** neighbors;
+
+}Node;
+
+
+Node* initialize_node(char* name, int degree){
+	Node* n = (Node*) malloc(sizeof(Node)); 
+	strcpy(n->name,name);
+	n->degree = degree;
+	n->visited = 0;
+	n->neighbors = (Node**) malloc(sizeof(Node*)*MAX_NEIGHBORS);
+	return n;
+	//VOLTA PRA ANTES DAQUI MZRA
+}
+Node* initialize_neighbors(int num, ...){
+	va_list valist;
+	va_start(valist,num);
+
+	Node* n = va_arg(valist,Node*);
+	
+	for(int i = 1; i < num; i++){
+		n->neighbors[i - 1] = va_arg(valist,Node*);
+	}
+
+	va_end(valist);
+
+	return n;
+}
+
+int main(){					//			 0	  1	   2     3   4    5    6    7    8    9    10    11   12
+	char* countries[NUMBER_OF_NODES] = {"BR","PR","UR","AR","CH","BO","PE","EC","CO","VN","GY","SU","GF"};
+	int number_of_neighbours[NUMBER_OF_NODES] = {10,3,2,5,3,5,5,2,4,3,3,3,2};
+	Node* node[NUMBER_OF_NODES];
+
+	for(int i = 0; i < NUMBER_OF_NODES; i++){
+		node[i] = initialize_node(countries[i],number_of_neighbours[i]);
+	}
+
+	node[0] = initialize_neighbors(node[0]->degree + 1,node[0],node[1],node[2],node[3],node[5],node[6],node[8],node[9],node[10],node[11],node[12]);
+	node[1] = initialize_neighbors(node[1]->degree + 1,node[1],node[0],node[3],node[5]);
+	node[2] = initialize_neighbors(node[2]->degree + 1,node[2],node[0],node[3]);
+	node[3] = initialize_neighbors(node[3]->degree + 1,node[3],node[0],node[1],node[2],node[4],node[5]);
+	node[4] = initialize_neighbors(node[4]->degree + 1,node[4],node[3],node[5],node[6]);
+	node[5] = initialize_neighbors(node[5]->degree + 1,node[5],node[0],node[1],node[3],node[4],node[6]);
+	node[6] = initialize_neighbors(node[6]->degree + 1,node[6],node[0],node[4],node[5],node[7],node[8]);
+	node[7] = initialize_neighbors(node[7]->degree + 1,node[7],node[1],node[8]);
+	node[8] = initialize_neighbors(node[8]->degree + 1,node[8],node[0],node[6],node[7],node[9]);
+	node[9] = initialize_neighbors(node[9]->degree + 1,node[9],node[0],node[8],node[10]);
+	node[10] = initialize_neighbors(node[10]->degree + 1,node[10],node[0],node[9],node[11]);
+	node[11] = initialize_neighbors(node[11]->degree + 1,node[11],node[0],node[10],node[12]);
+	node[12] = initialize_neighbors(node[12]->degree + 1,node[12],node[0],node[11]);
+
+
+
+	//Node* n2; 
+	//char* country2 = "AR";
+	//strcpy(n2->name,"AR");
+
+	//printf("%s\n",node[8]->name );
+	for(int i = 0; i < node[0]->degree; i ++){
+		printf("neighbour %d %s\n",i,node[0]->neighbors[i]->name );
+	}
+
+	//n1 = initialize_neighbors(2,initialize_node("BR"),n2);
+
+
+	//printf("%s\n",n2->name );
+
+	//n1->neighbors = (Node**) malloc(sizeof(Node*)*10);
+
+	//n1->neighbors[0] = n2;
+
+	//printf("%s\n",node[0]->neighbors[0]->name );
+
+	//printf("%s\n",a1->neighbors[0]->name );
+	return 0;
+}
+

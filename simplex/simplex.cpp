@@ -4,14 +4,51 @@
 #include <string.h>
 using namespace std;
 
-class simplex_solver{
+/*class simplex_solver{
 	public:
 		int number_of_variables;
 		int number_of_equations;
-		float oip;
+		int pivot_column;
+		int pivot_row;
 
+		
+		int get_pivot_column(vector < vector <float> > equations){
+			
+		    pivot_column = -1;
+		    float value = 0;
+		    for(int j = 0; j < equations[0].size(); j++){
+		    	if(equations[0][j] < 0 && equations[0][j] < value){
+		    		value = equations[0][j];
+		    		pivot_column = j;
+		    	}  
+		    }
+		    if(pivot_column == -1){
+		    	printf("already optimal\n");
+		    	return 2;
+		    }
+			
+			return pivot_column;
+		}
 
-};
+		int get_pivot_row(vector < vector <float> > equations){
+			pivot_row = -1;
+			float minimal_ratio = 100000;
+			float result;
+
+			// dividindo a primeira pelo valor dela
+			for(int i = 1; i < equations.size(); i++){
+				if(equations[i][pivot_column] > 0.9){
+					result = equations[i][equations[0].size() - 1]/equations[i][pivot_column];
+					if(result < minimal_ratio){
+						minimal_ratio = result;
+						pivot_row = i;
+					}
+				}
+			}
+			return pivot_row;
+		}
+
+};*/
 
 int get_pivot_column(vector < vector <float> > equations){
 	/* Getting pivot column and checking optimality */
@@ -121,7 +158,7 @@ int main(int argc, char* argv[])
     } 
 
     pivot_column = get_pivot_column(equations);
-	cout <<"Pivot : " << pivot_column << endl;	
+	cout << "Pivot : " << pivot_column << endl;	
 
 
 	pivot_row = get_pivot_row(equations, pivot_column);

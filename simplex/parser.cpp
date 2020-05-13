@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
-
+#include <unordered_map>
 using namespace std;
 
 std::string StringRemoveBorders(std::string str)
@@ -51,15 +51,27 @@ std::vector<std::string> StringSplit(std::string str)
     return str_vec;
 }
 
-void print_map(std::map<std::string,int> map){
+void print_map(std::map<std::string,auto> map){
 
     for (auto const& x : map){
 
     std::cout << x.first  // string (key)
-              << '\n'
+              << " -> "
               << x.second // string's value 
               << std::endl ;
     
+    }
+}
+
+void print_table(std::map < std::string, std::map <std::string, double>> Variables){
+    for(auto & outer_map_pair : Variables) {
+            //cout << outer_map_pair.first << " contains: " << endl;
+        cout << outer_map_pair.first << "-> ";
+        for(auto & inner_map_pair : outer_map_pair.second) {
+            cout <<inner_map_pair.first << ": " << inner_map_pair.second << " ";
+        }
+        std::cout << std::endl;   
+
     }
 }
 
@@ -119,36 +131,58 @@ int main(){
     }
 
     //print_map(Constraints); //print the map we just saw
-    
-    i = 0;
-
-    std::map< std::pair<std::string, std::string>, double> Variables;
+        
+    std::map < std::string, std::map <std::string, double>> Variables;
 
     while(std::getline(f,string)){
 
-        if(!string.compare("RHS")){
+        if(!string.compare("RHS"))
             break;
-        }
 
         //cout<< string << endl; prints the hole line
 
         auto str_vec = StringSplit(string);
 
-        for(int j = 1; j < str_vec.size(); j+= 1){
-            
-            std::cout << str_vec[j] << std::endl;
-            //cout << j << endl;
-
-        }
         /*
-            0 -> non constraining (N)
-            1 -> Less (L)
-            2 -> Equal (E)
-            3 -> Greater (G)
+            Doing the iteration in this way it will only grep the keys of each column
+            and the value of the key is right next to it, so we only need to iter within
+            the keys.
         */
-
-    
+        for(int j = 1; j < str_vec.size(); j+= 2){ 
+            
+            Variables[str_vec[0]][str_vec[j]] = std::stod(str_vec[j+1]);
+            std:: cout << std::stod(str_vec[j+1]) << std::endl;
+            //std::cout << str_vec[j] << std::endl; 
+            //cout << j << endl;
+        }
     }
 
+    std::map < std::string, double> RHS;
+
+    while(std::getline(f,string)){
+        if(!string.compare("BOUNDS"))
+            break;
+        
+
+        auto str_vec = StringSplit(string);
+
+        /*
+            Doing the iteration in this way it will only grep the keys of each column
+            and the value of the key is right next to it, so we only need to iter within
+            the keys.
+        */
+        for(int j = 1; j < str_vec.size(); j+= 2){ 
+            
+            RHS[str_vec[j]] = std::stod(str_vec[j+1]);
+            std:: cout << std::stod(str_vec[j+1]) << std::endl;
+            //std::cout << str_vec[j] << std::endl; 
+            //cout << j << endl;
+        }        
+    }
+    print_map(RHS);
+    print_table(Variables);
+
+    /* tem que passar pra um array agora essa mzra kkkkk */
+    
 	return 0;
 }

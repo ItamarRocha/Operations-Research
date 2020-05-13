@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include <unordered_map>
+#include <algorithm>
 using namespace std;
 
 std::string StringRemoveBorders(std::string str)
@@ -75,6 +75,51 @@ void print_table(std::map < std::string, std::map <std::string, double>> Variabl
     }
 }
 
+int get_number_of_variables(std::map < std::string, std::map <std::string, double>> Variables){
+    std::vector<std::string> var;
+
+    for(auto & rows : Variables) {
+        for(auto & columns : rows.second){
+            if(std::find(var.begin(), var.end(), columns.first) != var.end()){
+                //true statement if present
+                continue;
+            }else{
+                var.push_back(columns.first);
+                //cout << columns.first << endl;
+            }
+            //cout << rows.first << " = " << columns.second << endl;
+        }
+    }
+    return var.size();
+}
+
+
+std::vector< std::vector<double> > get_numerical_table(std::map < std::string ,std::map <std::string,double >> Variables , std::map <std::string,int> Constraints, std::map <std::string, double> RHS){
+
+    int number_of_variables = get_number_of_variables(Variables);
+    int number_of_equations = Variables.size();
+    
+
+    std::vector<std::vector<double>> tableau(number_of_equations, std::vector<double> (number_of_variables,0));
+    int i = 0;
+    int j = 0;
+    for(auto & outer_map_pair : Variables) {
+            //cout << outer_map_pair.first << " contains: " << endl;
+        for(auto & inner_map_pair : outer_map_pair.second) {
+            //tableau[i][j] = inner_map_pair.second;
+            cout <<inner_map_pair.second << " ";
+            j++;
+        }
+        i++;
+        std::cout << std::endl;   
+
+    }
+
+
+    return tableau;
+}
+
+
 int main(){
 
 	ifstream f ("instances/p2.mps", ios::in);
@@ -134,6 +179,8 @@ int main(){
         
     std::map < std::string, std::map <std::string, double>> Variables;
 
+    int max_size = 0;
+
     while(std::getline(f,string)){
 
         if(!string.compare("RHS"))
@@ -150,8 +197,8 @@ int main(){
         */
         for(int j = 1; j < str_vec.size(); j+= 2){ 
             
-            Variables[str_vec[0]][str_vec[j]] = std::stod(str_vec[j+1]);
-            std:: cout << std::stod(str_vec[j+1]) << std::endl;
+            Variables[str_vec[j]][str_vec[0]] = std::stod(str_vec[j+1]);
+            //std:: cout << std::stod(str_vec[j+1]) << std::endl;
             //std::cout << str_vec[j] << std::endl; 
             //cout << j << endl;
         }
@@ -174,15 +221,23 @@ int main(){
         for(int j = 1; j < str_vec.size(); j+= 2){ 
             
             RHS[str_vec[j]] = std::stod(str_vec[j+1]);
-            std:: cout << std::stod(str_vec[j+1]) << std::endl;
+            //std:: cout << std::stod(str_vec[j+1]) << std::endl;
             //std::cout << str_vec[j] << std::endl; 
             //cout << j << endl;
         }        
     }
-    print_map(RHS);
+    /*print_map(RHS);
     print_table(Variables);
-
-    /* tem que passar pra um array agora essa mzra kkkkk */
-    
-	return 0;
+    print_map(Constraints);*/
+    int a = get_number_of_variables(Variables);
+    cout << a << endl;
+    /*
+    std::vector< std::vector<double> > tableau = get_numerical_table(Variables,Constraints,RHS);
+    for(auto v : Variables)
+        std::cout << v.second.find("X1").second << endl;
+    */// MAS DE BOA PQ OQ VC N MODIFICA ELE JA SETA COMO 0, AGORA É SÓ VER A PARADA DE MAXIMIZAR
+    // MINIMIZAR E BOTAR AS PENALIDADES E VARIAVEIS DE FOLGA EITA MZRA QUE TEM COISA VIU
+	/* tem que passar pra um array agora essa mzra kkkkk */
+    // fazer meio que um map pra associar cada coluna ao numero dela na outra kk
+    return 0;
 }

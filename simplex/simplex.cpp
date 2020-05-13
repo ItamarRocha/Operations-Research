@@ -6,14 +6,14 @@ using namespace std;
 
 typedef struct simplex_equation{
 
-	vector < vector<float> > equations; //values
+	vector < vector<double> > equations; //values
 	vector<int> VB; //VB o 0 é a equação
 	vector<int> constraints; // constraints
 	vector<int> M_preprocess_erase;
 
 }simplex_equation;
 
-simplex_equation simplex_constructor(vector < vector<float> > equations,vector<int> VB,vector<int> constraints){
+simplex_equation simplex_constructor(vector < vector<double> > equations,vector<int> VB,vector<int> constraints){
 	
 	simplex_equation s1;
 	s1.equations = equations;
@@ -33,7 +33,7 @@ simplex_equation simplex_constructor(vector < vector<float> > equations,vector<i
 void preprocess_equations(simplex_equation* s1){
 
 	int row;
-	float multiplier;
+	double multiplier;
 	for(int k = 0; k < s1->M_preprocess_erase.size(); k++){
 		//cout << s1->M_preprocess_erase[k];
 		row = -1;
@@ -57,11 +57,11 @@ void preprocess_equations(simplex_equation* s1){
 int get_pivot_column(simplex_equation s1){
 	/* Getting pivot column and checking optimality */
     int pivot_column = -1;
-    float min_value = 0;
+    double min_value = 0;
 
     //cout << "opa" << s1.constraints[0] << endl;
 
-    for(int j = 0; j < s1.equations[0].size(); j++){
+    for(int j = 0; j < s1.equations[0].size() - 1; j++){ // -1 pra excluir a ultima coluna que é a das soluções
     	//printf("%lf\n",equations[0][j] );
     	if((s1.equations[0][j] < 0  && s1.equations[0][j] < min_value)){ // tem que ser < 0 e o menor valor presente
     		min_value = s1.equations[0][j];
@@ -78,8 +78,8 @@ int get_pivot_column(simplex_equation s1){
 
 int get_pivot_row(simplex_equation s1, int pivot_column){
 	int pivot_row = -1;
-	float minimal_ratio = 100000;
-	float result;
+	double minimal_ratio = 100000;
+	double result;
 
 	// dividindo a primeira pelo valor dela
 	for(int i = 1; i < s1.equations.size(); i++){ // pega do 1 porque o zero é a função que a gente quer maximizar
@@ -100,7 +100,7 @@ int get_pivot_row(simplex_equation s1, int pivot_column){
 
 void refresh_equations(simplex_equation * s1,int pivot_column, int pivot_row){
 
-	float pivot_element = s1->equations[pivot_row][pivot_column];
+	double pivot_element = s1->equations[pivot_row][pivot_column];
 	
 	s1->VB[pivot_row] = pivot_column + 1;
 
@@ -115,7 +115,7 @@ void refresh_equations(simplex_equation * s1,int pivot_column, int pivot_row){
 	for(int i = 0; i < s1->equations.size(); i++){
 
 		if(s1->equations[i][pivot_column] != 0){
-			float multiplier = s1->equations[i][pivot_column] * (-1);
+			double multiplier = s1->equations[i][pivot_column] * (-1);
 
 			for(int j = 0; j < s1->equations[0].size(); j++){
 
@@ -159,7 +159,8 @@ int main(int argc, char* argv[])
     /*vector < vector<float> > equations {{0.4,0.5,0,10000,0,10000,0},
 										{0.3,0.1,1,0,0,0,2.7},
 										{0.5,0.5,0,1,0,0,6},
-										{0.6,0.4,0,0,-1,1,6}};*/
+										{0.6,0.4,0,0,-1,1,6}};*/ //Z = -5.25 X1 = 7.5 X5 = 0.3 X2 = 4.5
+
     									
 
     								    	/*{{-3, -5,  0, 0, 0,  0}, // ou 0
@@ -170,19 +171,25 @@ int main(int argc, char* argv[])
                    					/*{{-1,-1,-1,0,0,0},
     									 {1,1,0,1,0,1 },
     									 {0,-1,1,0,1,0}};*/
+	
                    					/* { 	{-40, -50,  0, 0, 0,  0},
     										{ 1,  2,  1, 0, 0,  12},
     										{ 5,  4,  0, 1, 0,  30},
                    							{ 3,  1,  0, 0, 1,  15} };*/
+									/*	{{-2,-1,-2,0,0,0,0},
+										 {2,1,0,1,0,0,10},
+										 {1,2,-2,0,1,0,20},
+										 {0,1,2,0,0,1,5}} //Z = 15 X1 = 5 X5 = 20 X3 = 2.5
+
 /*
 	vector<std::string> VB {"Z","X3","X4","X5"};
 	vector<int> constraints {0,0,0,0};*/
 
-	simplex_equation s1 = simplex_constructor({{-3, -5,  0, 0, 10000,  0},
-    										  { 1,  0,  1, 0, 0,  4},
-    										  { 0,  2,  0, 1, 0,  12},
-                   							  { 3,  2,  0, 0, 1,  18} },
-                   							  {0,3,4,5},
+	simplex_equation s1 = simplex_constructor({{0.4,0.5,0,10000,0,10000,0},
+										{0.3,0.1,1,0,0,0,2.7},
+										{0.5,0.5,0,1,0,0,6},
+										{0.6,0.4,0,0,-1,1,6}},
+                   							  {0,4,5,6},
                    							  {0,0,0,0} //no primeiro refere-se a FO // 0 max // 1 min
                    							  			//o resto é cada constraint // 0 <= // 1 = // 2 >=  
 												);

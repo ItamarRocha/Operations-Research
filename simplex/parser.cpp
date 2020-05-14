@@ -75,7 +75,7 @@ void print_table(std::map < std::string, std::map <std::string, double>> Variabl
     }
 }
 
-int get_number_of_variables(std::map < std::string, std::map <std::string, double>> Variables){
+std::vector<std::string> get_number_of_variables(std::map < std::string, std::map <std::string, double>> Variables){
     std::vector<std::string> var;
 
     for(auto & rows : Variables) {
@@ -90,30 +90,53 @@ int get_number_of_variables(std::map < std::string, std::map <std::string, doubl
             //cout << rows.first << " = " << columns.second << endl;
         }
     }
-    return var.size();
+    return var;
 }
 
 
-std::vector< std::vector<double> > get_numerical_table(std::map < std::string ,std::map <std::string,double >> Variables , std::map <std::string,int> Constraints, std::map <std::string, double> RHS){
-
-    int number_of_variables = get_number_of_variables(Variables);
+std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int both_case, int n_slack_var,std::map < std::string ,std::map <std::string,double >> Variables , std::map <int,int> Constraints, std::map <std::string, double> RHS){
+    std::vector<std::string> columns_name = get_number_of_variables(Variables);
+    int number_of_variables = columns_name.size();
     int number_of_equations = Variables.size();
     
 
-    std::vector<std::vector<double>> tableau(number_of_equations, std::vector<double> (number_of_variables,0));
+    std::vector<std::vector<double>> tableau(number_of_equations, std::vector<double> (number_of_variables + n_slack_var + n_artificial_var + both_case + 1,0)); // +1 in reference to RHS
     int i = 0;
     int j = 0;
-    for(auto & outer_map_pair : Variables) {
-            //cout << outer_map_pair.first << " contains: " << endl;
-        for(auto & inner_map_pair : outer_map_pair.second) {
-            //tableau[i][j] = inner_map_pair.second;
-            cout <<inner_map_pair.second << " ";
-            j++;
+    for(auto & rows : Variables) { //rows
+            cout << rows.first << " contains: " << endl;
+        for(int k = 0; k < number_of_variables; k++) { // columns
+            tableau[i][k] = Variables[rows.first][columns_name[k]];
+            //cout << inner_map_pair.second << " ";
+            cout << columns_name[k] << endl;
         }
         i++;
         std::cout << std::endl;   
 
     }
+    //for(;i < tableau[0].size(); i++){
+    for(auto & constr : Constraints){
+        if(i == tableau[0].size() - 1)
+            break;
+        if(constr.second == 0){
+            continue;
+        }else if(constr.second == 1){
+            tableau[constr.first][i] = 1;    
+        }else if(constr.second == 2){
+            tableau[constr.first][i] = 1;
+            tableau[0][i] = -10000;
+            i++;
+        }else if(constr.second == 3){
+            tableau[constr.first][i] = -1;
+            tableau[constr.first][i + 1] = 1;
+            tableau[0][i+1] = -10000;
+        }
+        
+
+        i++;
+    }
+    //for(auto)
+    
 
 
     return tableau;
@@ -124,8 +147,10 @@ int main(){
 
 	ifstream f ("instances/p2.mps", ios::in);
 
-    map<std::string,int> Constraints;
-
+    map<int,int> Constraints;
+    int n_artificial_var = 0;
+    int n_slack_var = 0;
+    int both_case = 0;
 
 	std::string string;
 
@@ -133,6 +158,7 @@ int main(){
     /*
         ROWS AND CONSTRAINTS
     */
+    int row_number = 0;
     while(getline(f,string)){
 
         if (i <= 1){
@@ -151,23 +177,23 @@ int main(){
             2 -> Equal (E)
             3 -> Greater (G)
         */
-
+        
         if(str_vec[0] == "N"){
 
-            Constraints[str_vec[1]] = 0;
-
+            Constraints[row_number] = 0;
+            row_number++;
         }else if(str_vec[0] == "L"){
-
-            Constraints[str_vec[1]] = 1;
-
+            n_slack_var++;
+            Constraints[row_number] = 1;
+            row_number++;
         }else if(str_vec[0] == "E"){
-
-            Constraints[str_vec[1]] = 2;
-
+            n_artificial_var++;
+            Constraints[row_number] = 2;
+            row_number++;
         }else if(str_vec[0] == "G"){
-
-            Constraints[str_vec[1]] = 3;
-
+            both_case++;
+            Constraints[row_number] = 3;
+            row_number++;
         }else{
             printf("Error No such constraint\n");
             exit(-1);
@@ -229,13 +255,16 @@ int main(){
     /*print_map(RHS);
     print_table(Variables);
     print_map(Constraints);*/
-    int a = get_number_of_variables(Variables);
-    cout << a << endl;
-    /*
-    std::vector< std::vector<double> > tableau = get_numerical_table(Variables,Constraints,RHS);
-    for(auto v : Variables)
-        std::cout << v.second.find("X1").second << endl;
-    */// MAS DE BOA PQ OQ VC N MODIFICA ELE JA SETA COMO 0, AGORA É SÓ VER A PARADA DE MAXIMIZAR
+
+    std::vector< std::vector<double> > tableau = get_numerical_table(n_artificial_var,both_case,n_slack_var,Variables ,Constraints,RHS);
+    
+    
+    for (int i = 0; i < tableau.size(); i++) { 
+        for (int j = 0; j < tableau[i].size(); j++) 
+            cout << tableau[i][j] << " "; 
+        cout << endl; 
+    } 
+    // MAS DE BOA PQ OQ VC N MODIFICA ELE JA SETA COMO 0, AGORA É SÓ VER A PARADA DE MAXIMIZAR
     // MINIMIZAR E BOTAR AS PENALIDADES E VARIAVEIS DE FOLGA EITA MZRA QUE TEM COISA VIU
 	/* tem que passar pra um array agora essa mzra kkkkk */
     // fazer meio que um map pra associar cada coluna ao numero dela na outra kk

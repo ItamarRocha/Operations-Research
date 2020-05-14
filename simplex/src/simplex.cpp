@@ -2,23 +2,24 @@
 #include <cmath>
 #include <vector>
 #include <string.h>
+#include "parser.h"
 using namespace std;
 
 typedef struct simplex_equation{
 
 	vector < vector<double> > equations; //values
 	vector<int> VB; //VB o 0 é a equação
-	vector<int> constraints; // constraints
+	//vector<int> constraints; // constraints
 	vector<int> M_preprocess_erase;
 
 }simplex_equation;
 
-simplex_equation simplex_constructor(vector < vector<double> > equations,vector<int> VB,vector<int> constraints){
+simplex_equation simplex_constructor(vector < vector<double> > equations,vector<int> VB){//,vector<int> constraints){
 	
 	simplex_equation s1;
 	s1.equations = equations;
 	s1.VB = VB;
-	s1.constraints = constraints;
+	//s1.constraints = constraints;
 
 	for (int j = 0; j < s1.equations[0].size(); j++) { 
         if (equations[0][j] > 9000)
@@ -143,16 +144,24 @@ void solve_simplex(simplex_equation* s1){
 	}
 }
 
-void show_tableau(simplex_equation s1){
-	for (int i = 0; i < s1.equations.size(); i++) { 
-        for (int j = 0; j < s1.equations[i].size(); j++) 
-            cout << s1.equations[i][j] << " "; 
+/*void show_tableau(vector < vector<double> > equations){
+	for (int i = 0; i < equations.size(); i++) { 
+        for (int j = 0; j < equations[i].size(); j++) 
+            cout << equations[i][j] << " "; 
         cout << endl; 
     } 
-}
+}*/
 
 int main(int argc, char* argv[])
 {
+
+	if(argc < 2){
+		std::cout << "Wrong Pattern\n" << "EX: \n" << "./simplex [filename]" << std::endl;
+		exit(-1);
+	}
+
+	std::string filename = argv[1];
+	//strcpy(filename,argv[1]);
 	
     // In this way we have the number of equations as row and the sum of equations and variables as the columns
     // in order to achieve a way to represente both NBV and BV(0)
@@ -185,26 +194,33 @@ int main(int argc, char* argv[])
 	vector<std::string> VB {"Z","X3","X4","X5"};
 	vector<int> constraints {0,0,0,0};*/
 
-	simplex_equation s1 = simplex_constructor({{0.4,0.5,0,10000,0,10000,0},
+/*	simplex_equation s1 = simplex_constructor({{0.4,0.5,0,10000,0,10000,0},
 										{0.3,0.1,1,0,0,0,2.7},
 										{0.5,0.5,0,1,0,0,6},
 										{0.6,0.4,0,0,-1,1,6}},
-                   							  {0,4,5,6},
-                   							  {0,0,0,0} //no primeiro refere-se a FO // 0 max // 1 min
+                   							  {0,4,5,6} //no primeiro refere-se a FO // 0 max // 1 min
                    							  			//o resto é cada constraint // 0 <= // 1 = // 2 >=  
 												);
-
+*/
 /*
 	cout << equations.size() << endl; // number of rows
 	cout << equations[0].size() << endl; //number of columns
-*/
+*/	
+
+	vector < vector<double> > v1 = get_tableau(filename);
+
+	simplex_equation s1 = simplex_constructor(v1,
+                   							  {0,4,5} //no primeiro refere-se a FO // 0 max // 1 min
+                   							  			//o resto é cada constraint // 0 <= // 1 = // 2 >=  
+												);
+
 	preprocess_equations(&s1);
 
-	show_tableau(s1);
+	//show_tableau(s1.equations);
 
     solve_simplex(&s1);
 	
-    show_tableau(s1);
+    show_tableau(s1.equations);
 
     for(int i = 0; i < s1.VB.size(); i++){
     	if (i == 0)
@@ -215,5 +231,10 @@ int main(int argc, char* argv[])
     
     	}
     }
+
+	
+	//show_tableau(v1);
+
+
 	return 0;
 }

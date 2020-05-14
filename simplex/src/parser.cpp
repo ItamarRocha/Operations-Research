@@ -1,8 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <map>
-#include <algorithm>
+#include "parser.h"
 using namespace std;
 
 std::string StringRemoveBorders(std::string str)
@@ -51,7 +47,7 @@ std::vector<std::string> StringSplit(std::string str)
     return str_vec;
 }
 
-void print_map(std::map<std::string,auto> map){
+/*void print_map(std::map<std::string,auto> map){
 
     for (auto const& x : map){
 
@@ -61,7 +57,7 @@ void print_map(std::map<std::string,auto> map){
               << std::endl ;
     
     }
-}
+}*/
 
 void print_table(std::map < std::string, std::map <std::string, double>> Variables){
     for(auto & outer_map_pair : Variables) {
@@ -74,6 +70,15 @@ void print_table(std::map < std::string, std::map <std::string, double>> Variabl
 
     }
 }
+
+void show_tableau(std::vector<std::vector<double>> tableau){
+    for (int i = 0; i < tableau.size(); i++) { 
+        for (int j = 0; j < tableau[i].size(); j++) 
+            cout << tableau[i][j] << " "; 
+        cout << endl; 
+    } 
+}
+
 
 std::vector<std::string> get_number_of_variables(std::map < std::string, std::map <std::string, double>> Variables){
     std::vector<std::string> var;
@@ -91,14 +96,6 @@ std::vector<std::string> get_number_of_variables(std::map < std::string, std::ma
         }
     }
     return var;
-}
-
-void show_tableau(std::vector<std::vector<double>> tableau){
-    for (int i = 0; i < tableau.size(); i++) { 
-        for (int j = 0; j < tableau[i].size(); j++) 
-            cout << tableau[i][j] << " "; 
-        cout << endl; 
-    } 
 }
 
 std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int both_case, int n_slack_var,std::map < std::string ,std::map <std::string,double >> Variables , std::map <int,int> Constraints, std::map <std::string, double> RHS){
@@ -125,6 +122,8 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
         //cout << tableau[0].size() - 1 << endl;
     }
     
+    std::vector<int> VB;
+    VB.push_back(0); // adding the cost line
     for(auto & constr : Constraints){
         /*show_tableau(tableau);
         cout << endl;
@@ -135,28 +134,37 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
         if(constr.second == 0){
             continue;
         }else if(constr.second == 1){
-            tableau[constr.first][k] = 1;    
+            tableau[constr.first][k] = 1;
+            VB.push_back(k+1);    
         }else if(constr.second == 2){
             tableau[constr.first][k] = 1;
             tableau[0][k] = -10000;
+            VB.push_back(k+1);
         }else if(constr.second == 3){
             tableau[constr.first][k] = -1;
+            VB.push_back(k+2);
             tableau[constr.first][k + 1] = 1;
             tableau[0][k+1] = -10000;
             k++;
         }
-        
-
         k++;
+    }
+
+    for(int j = 0; j < VB.size() ; j++){
+        cout << VB[j] << endl;
+    }
+
+    for(int j = 0 ; j < tableau[0].size(); j++){
+        tableau[0][j] *= -1;
     }
 
     return tableau;
 }
 
 
-int main(){
+std::vector< std::vector<double> > get_tableau(std::string filename){
 
-	ifstream f ("instances/p5.mps", ios::in);
+	ifstream f (filename, ios::in);
 
     map<int,int> Constraints;
     int n_artificial_var = 0;
@@ -242,7 +250,7 @@ int main(){
     std::map < std::string, double> RHS;
 
     while(std::getline(f,string)){
-        if(!string.compare("BOUNDS"))
+        if(!string.compare("BOUNDS") or !string.compare("ENDATA"))
             break;
         
 
@@ -270,5 +278,5 @@ int main(){
     // MINIMIZAR E BOTAR AS PENALIDADES E VARIAVEIS DE FOLGA EITA MZRA QUE TEM COISA VIU
 	/* tem que passar pra um array agora essa mzra kkkkk */
     // fazer meio que um map pra associar cada coluna ao numero dela na outra kk
-    return 0;
+    return tableau;
 }

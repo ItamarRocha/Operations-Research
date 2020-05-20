@@ -20,14 +20,12 @@ simplex_equation simplex_constructor(vector < vector<double> > equations,vector<
 	s1.equations = equations;
 	s1.VB = VB;
 	//s1.constraints = constraints;
-
 	for (int j = 0; j < s1.equations[0].size(); j++) { 
         if (equations[0][j] > 9000)
         {	
         	s1.M_preprocess_erase.push_back(j);
         }
     }
-
 	return s1;
 }
 
@@ -201,7 +199,12 @@ int main(int argc, char* argv[])
                    							  {0,4,5,6} //no primeiro refere-se a FO // 0 max // 1 min
                    							  			//o resto é cada constraint // 0 <= // 1 = // 2 >=  
 												);
-*/
+*/	
+/*
+	{{-1, -1, -1, 0, 0, 0}, 
+												{1, 1, 0, 1, 0, 1}, 
+												{0, -1, 1, 0, 1, 0}},
+                   							  {0,4,5}*/
 /*
 	cout << equations.size() << endl; // number of rows
 	cout << equations[0].size() << endl; //number of columns
@@ -209,8 +212,7 @@ int main(int argc, char* argv[])
 
 	vector < vector<double> > v1 = get_tableau(filename);
 
-	simplex_equation s1 = simplex_constructor(v1,
-                   							  {0,4,5} //no primeiro refere-se a FO // 0 max // 1 min
+	simplex_equation s1 = simplex_constructor(v1,{0,3,5}//no primeiro refere-se a FO // 0 max // 1 min
                    							  			//o resto é cada constraint // 0 <= // 1 = // 2 >=  
 												);
 

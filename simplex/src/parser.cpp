@@ -100,6 +100,7 @@ std::vector<std::string> get_number_of_variables(std::map < std::string, std::ma
 
 std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int both_case, int n_slack_var,std::map < std::string ,std::map <std::string,double >> Variables , std::map <int,int> Constraints, std::map <std::string, double> RHS){
     std::vector<std::string> columns_name = get_number_of_variables(Variables);
+    std::vector<std::string> rows_name;
     int number_of_variables = columns_name.size();
     int number_of_equations = Variables.size();
     
@@ -119,11 +120,13 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
         tableau[i][tableau[0].size() - 1] = Variables[rows.first][columns_name[number_of_variables - 1]]; // number_of_variables -1 is to find the RHS values
         // puts in the last tableau column which is suposed to be the RHS
         i++;
+        rows_name.push_back(rows.first);
         //cout << tableau[0].size() - 1 << endl;
     }
     
-    std::vector<int> VB;
-    VB.push_back(0); // adding the cost line
+    i=1;
+    std::vector<std::string> VB;
+    VB.push_back(rows_name[0]); // adding the cost line
     for(auto & constr : Constraints){
         /*show_tableau(tableau);
         cout << endl;
@@ -135,19 +138,20 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
             continue;
         }else if(constr.second == 1){
             tableau[constr.first][k] = 1;
-            VB.push_back(k+1);    
+            VB.push_back(rows_name[i]);//k+1);    
         }else if(constr.second == 2){
             tableau[constr.first][k] = 1;
             tableau[0][k] = -10000;
-            VB.push_back(k+1);
+            VB.push_back(rows_name[i]); //k+1);
         }else if(constr.second == 3){
             tableau[constr.first][k] = -1;
-            VB.push_back(k+2);
+            VB.push_back(rows_name[i]);  //k+2);
             tableau[constr.first][k + 1] = 1;
             tableau[0][k+1] = -10000;
             k++;
         }
         k++;
+        i++;
     }
 
     for(int j = 0; j < VB.size() ; j++){
@@ -155,7 +159,8 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
     }
 
     for(int j = 0 ; j < tableau[0].size(); j++){
-        tableau[0][j] *= -1;
+        if(tableau[0][j] != 0)
+            tableau[0][j] *= -1;
     }
 
     return tableau;

@@ -1,0 +1,3 @@
+1. Parser
+	* Generalizar essa porra, no afiro quando retorna o columns name ta vindo todo cagado, na linha 33, era pra ta vindo na 60 esse carai. Tem uns bugzin anda
+

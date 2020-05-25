@@ -1,3 +1,2 @@
-1. Parser
-	* Generalizar essa porra, no afiro quando retorna o columns name ta vindo todo cagado, na linha 33, era pra ta vindo na 60 esse carai. Tem uns bugzin anda
-
+1. Ver questão do M grande e estudar como elimina. Acho que o problema ta nisso.
+2. pivot row ta dando cagado e os resultados tão ruims em geral. Só funfando nos casos de brinquedo

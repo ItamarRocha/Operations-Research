@@ -1,5 +1,6 @@
 NAME          AFIRO                                                             
 ROWS
+ N  COST   
  E  R09     
  E  R10     
  L  X05     
@@ -27,7 +28,6 @@ ROWS
  L  X49     
  L  X50     
  L  X51     
- N  COST    
 COLUMNS
     X01       X48               .301   R09                -1.   
     X01       R10              -1.06   X05                 1.   

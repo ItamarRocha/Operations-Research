@@ -1,0 +1,9 @@
+sc105.mps
+sc205.mps
+adlittle.mps
+afiro.mps
+share2b.mps
+blend.mps
+kb2
+LOTFI
+stocfor1

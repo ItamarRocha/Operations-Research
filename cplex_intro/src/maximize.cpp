@@ -6,21 +6,18 @@ int main(){
 	IloEnv env;
 	IloModel model(env);
 
-	std::cout << "opa" << std::endl;
-	IloNumVar x1(env,ILOFLOAT);
-	IloNumVar x2(env,ILOFLOAT);
-	IloNumVar x3(env,ILOFLOAT);
+	IloBoolVar x1(env);
+	IloBoolVar x2(env);
+	IloBoolVar x3(env);
 	//adding constraints
 	//model.add(IloMinimize(env,x1 + x2 + x3));
 	
-	model.add(x1 + x2 == 7); // creates an ilorange object
-	model.add(2*x1 + -x2 == 3); // creates an ilorange object
-	std::cout << "opa" << std::endl;
-
+	model.add(4*x1 + 5*x2 + 2*x3 <= 9); // creates an ilorange object
+	
 	//IloObjective obj = IloMinimize(env, x1 + 2*x2 + 3*x3);
 	// not needed you can directly skip to adding it to the model
-	model.add(IloMinimize(env,-x1 -x2));
-	std::cout << "opa" << std::endl;
+	model.add(IloMaximize(env,5*x1 + 4*x2 + 3*x3));
+
 	IloCplex cplex(model);
 
 	try
@@ -38,6 +35,9 @@ int main(){
 	*/
 	std::cout << "status:" << cplex.getStatus() << std::endl;
 	std::cout << "Z : " << cplex.getObjValue() << std::endl;
+	std::cout << "x1: " << cplex.getValue(x1) << std::endl;
+	std::cout << "x2: " << cplex.getValue(x2) << std::endl;
+	std::cout << "x3: " << cplex.getValue(x3) << std::endl;
 
 	exit(0);
 }

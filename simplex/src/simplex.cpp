@@ -14,11 +14,11 @@ typedef struct simplex_equation{
 
 }simplex_equation;
 
-simplex_equation simplex_constructor(vector < vector<double> > equations,vector<int> VB){//,vector<int> constraints){
+simplex_equation simplex_constructor(vector < vector<double> > equations){ //,vector<int> VB){ //,vector<int> constraints){
 	
 	simplex_equation s1;
 	s1.equations = equations;
-	s1.VB = VB;
+	//s1.VB = VB;
 	//s1.constraints = constraints;
 	for (int j = 0; j < s1.equations[0].size(); j++) { 
         if (equations[0][j] > 9000)
@@ -76,8 +76,8 @@ int get_pivot_column(simplex_equation s1){
 }
 
 int get_pivot_row(simplex_equation s1, int pivot_column){
-	int pivot_row = -1;
-	double minimal_ratio = 100000;
+	int pivot_row = 1;
+	long double minimal_ratio = 10000000;
 	double result;
 
 	// dividindo a primeira pelo valor dela
@@ -101,7 +101,7 @@ void refresh_equations(simplex_equation * s1,int pivot_column, int pivot_row){
 
 	double pivot_element = s1->equations[pivot_row][pivot_column];
 	
-	s1->VB[pivot_row] = pivot_column + 1;
+	//s1->VB[pivot_row] = pivot_column + 1;
 
 	//divide the pivot line by the pivot element
 	for(int j = 0; j < s1->equations[0].size(); j++){
@@ -212,19 +212,23 @@ int main(int argc, char* argv[])
 
 	vector < vector<double> > v1 = get_tableau(filename);
 
-	simplex_equation s1 = simplex_constructor(v1,{0,3,5}//no primeiro refere-se a FO // 0 max // 1 min
+	simplex_equation s1 = simplex_constructor(v1//no primeiro refere-se a FO // 0 max // 1 min
                    							  			//o resto é cada constraint // 0 <= // 1 = // 2 >=  
 												);
 
 	preprocess_equations(&s1);
 
-	//show_tableau(s1.equations);
+	show_tableau(s1.equations);
+
+	std::cout <<"\n";
 
     solve_simplex(&s1);
 	
     show_tableau(s1.equations);
 
-    for(int i = 0; i < s1.VB.size(); i++){
+    cout << "Z" << " = " << s1.equations[0][s1.equations[0].size()-1]<<endl;
+
+   /* for(int i = 0; i < s1.VB.size(); i++){
     	if (i == 0)
     	{
    			cout << "Z" << " = " << s1.equations[i][s1.equations[0].size()-1]<<endl;
@@ -232,7 +236,7 @@ int main(int argc, char* argv[])
     		cout << "X" <<s1.VB[i]<< " = " << s1.equations[i][s1.equations[0].size()-1]<<endl;
     
     	}
-    }
+    }*/
 
 	
 	//show_tableau(v1);

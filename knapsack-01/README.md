@@ -50,3 +50,6 @@
 			<tr><td>knapPI_3_5000_1000_1</td><td>72505</td></tr>
 			<tr><td>knapPI_3_10000_1000_1</td><td>146919</td></tr>
 		</tbody></table>
+
+### Source
+http://artemisa.unicauca.edu.co/~johnyortega/instances_01_KP/

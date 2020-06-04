@@ -101,7 +101,7 @@ std::vector<std::string> get_number_of_variables(std::map < std::string, std::ma
 std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int both_case, int n_slack_var,std::map < std::string ,std::map <std::string,double >> Variables , std::map <int,int> Constraints, std::map <std::string, double> RHS){
     std::vector<std::string> columns_name = get_number_of_variables(Variables);
     std::vector<std::string> rows_name;
-    int number_of_variables = columns_name.size();
+    int number_of_variables = columns_name.size() + 1; //+1 comes from rhs
     int number_of_equations = Variables.size();
     
 
@@ -110,14 +110,14 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
     int k = 0;
     bool reset = 1;
     for(auto & rows : Variables) { //rows
-            //cout << rows.first << " contains: " << endl;
+        //cout << rows.first << " contains: " << endl;
         for(k = 0; k < number_of_variables - 1; k++) { // columns
             tableau[i][k] = Variables[rows.first][columns_name[k]];
             //cout << columns_name[k] << " = " << tableau[i][k] << endl;
         }
         
         // this tablear[0].size() - 1 is equivalent to the number of columns, the index of the last one
-        tableau[i][tableau[0].size() - 1] = Variables[rows.first][columns_name[number_of_variables - 1]]; // number_of_variables -1 is to find the RHS values
+        tableau[i][tableau[0].size() - 1] = RHS[rows.first]; // number_of_variables -1 is to find the RHS values
         // puts in the last tableau column which is suposed to be the RHS
         i++;
         rows_name.push_back(rows.first);
@@ -141,13 +141,13 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
             VB.push_back(rows_name[i]);//k+1);    
         }else if(constr.second == 2){
             tableau[constr.first][k] = 1;
-            tableau[0][k] = -10000;
+            tableau[0][k] = -100000;
             VB.push_back(rows_name[i]); //k+1);
         }else if(constr.second == 3){
             tableau[constr.first][k] = -1;
             VB.push_back(rows_name[i]);  //k+2);
             tableau[constr.first][k + 1] = 1;
-            tableau[0][k+1] = -10000;
+            tableau[0][k+1] = -100000;
             k++;
         }
         k++;
@@ -268,13 +268,13 @@ std::vector< std::vector<double> > get_tableau(std::string filename){
         */
         for(int j = 1; j < str_vec.size(); j+= 2){ 
             
-            Variables[str_vec[j]][str_vec[0]] = std::stod(str_vec[j+1]);
+            RHS[str_vec[j]] = std::stod(str_vec[j+1]);
             //std:: cout << std::stod(str_vec[j+1]) << std::endl;
         }        
     }
-    /*print_map(RHS);
-    print_table(Variables);
-    print_map(Constraints);*/
+    
+    //print_table(Variables);
+    //print_table(Constraints);
 
     std::vector< std::vector<double> > tableau = get_numerical_table(n_artificial_var,both_case,n_slack_var,Variables ,Constraints,RHS);
     

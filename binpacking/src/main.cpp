@@ -109,7 +109,7 @@ void solve(Data *d1){
 
 	std::cout << "status:" << bpp.getStatus() << std::endl;
     std::cout << "numero de bins usados:" << bpp.getObjValue() << std::endl;
-    for(int i = 0; i < d1->getNItems(); i++) 
+    /*for(int i = 0; i < d1->getNItems(); i++) 
     {
         for(int k = 0; k < d1->getNItems(); k++)
         {
@@ -118,7 +118,7 @@ void solve(Data *d1){
                 std::cout << "item " << i << " no bin " << k << std::endl;
             }
         }
-    }
+    }*/
 
 	env.end();
 }

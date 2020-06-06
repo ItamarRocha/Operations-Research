@@ -7,13 +7,14 @@ int main(int argc, char* argv[]){
 	
 	if(argc < 2){
 		std::cout << "Wrong Pattern, Type the path to the instance" << std::endl;
+		exit(1);
 	}
 
 	Data d1 = Data(argv[1]);
 
 	solve(&d1);
 
-	return 0;
+	exit(0);
 
 }
 
@@ -68,6 +69,4 @@ void solve(Data* d1){
     }*/
     
     env.end();
-
-    exit(0);
 }

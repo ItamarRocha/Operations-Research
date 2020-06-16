@@ -1,4 +1,13 @@
-# Expected Results
+# Binpacking
+
+## Modelling
+* Decision Variable
+> <img src="https://latex.codecogs.com/svg.latex?\Large&space;x_{ij}" title="decision" />, where i represents items and j represents bins
+  
+* Objective Function  
+> <img src="https://latex.codecogs.com/svg.latex?\Large&space;min\sum_j{y_j}" title="sum" />, where y_j represents if a bin is active or not
+
+## Expected Results
 
  bpp/N1C1W1_A.BPP	25	<br>
  bpp/N1C1W1_B.BPP	31	<br>

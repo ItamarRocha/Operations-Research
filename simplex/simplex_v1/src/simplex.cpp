@@ -77,7 +77,7 @@ int get_pivot_column(simplex_equation s1){
 
 int get_pivot_row(simplex_equation s1, int pivot_column){
 	int pivot_row = 1;
-	long double minimal_ratio = 10000000;
+	long double minimal_ratio = 10000;
 	double result;
 
 	// dividindo a primeira pelo valor dela

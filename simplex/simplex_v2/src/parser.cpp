@@ -1,4 +1,5 @@
 #include "parser.h"
+#define BIG_M 100000
 using namespace std;
 
 std::string StringRemoveBorders(std::string str)
@@ -47,19 +48,7 @@ std::vector<std::string> StringSplit(std::string str)
     return str_vec;
 }
 
-/*void print_map(std::map<std::string,auto> map){
-
-    for (auto const& x : map){
-
-    std::cout << x.first  // string (key)
-              << " -> "
-              << x.second // string's value 
-              << std::endl ;
-    
-    }
-}*/
-
-void print_table(std::map < std::string, std::map <std::string, double>> Variables){
+void print_table(std::map < std::string, std::map <std::string,long double>> Variables){
     for(auto & outer_map_pair : Variables) {
             //cout << outer_map_pair.first << " contains: " << endl;
         cout << outer_map_pair.first << "-> ";
@@ -71,7 +60,7 @@ void print_table(std::map < std::string, std::map <std::string, double>> Variabl
     }
 }
 
-void show_tableau(std::vector<std::vector<double>> tableau){
+void show_tableau(std::vector<std::vector<long double>> tableau){
     for (int i = 0; i < tableau.size(); i++) { 
         for (int j = 0; j < tableau[i].size(); j++) 
             cout << tableau[i][j] << " "; 
@@ -80,7 +69,7 @@ void show_tableau(std::vector<std::vector<double>> tableau){
 }
 
 
-std::vector<std::string> get_number_of_variables(std::map < std::string, std::map <std::string, double>> Variables){
+std::vector<std::string> get_number_of_variables(std::map < std::string, std::map <std::string,long double>> Variables){
     std::vector<std::string> var;
 
     for(auto & rows : Variables) {
@@ -98,14 +87,14 @@ std::vector<std::string> get_number_of_variables(std::map < std::string, std::ma
     return var;
 }
 
-std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int both_case, int n_slack_var,std::map < std::string ,std::map <std::string,double >> Variables , std::map <int,int> Constraints, std::map <std::string, double> RHS){
+std::vector< std::vector<long double> > get_numerical_table(int n_artificial_var,int both_case, int n_slack_var,std::map < std::string ,std::map <std::string,long double >> Variables , std::map <int,int> Constraints, std::map <std::string,long double> RHS){
     std::vector<std::string> columns_name = get_number_of_variables(Variables);
     std::vector<std::string> rows_name;
     int number_of_variables = columns_name.size() + 1; //+1 comes from rhs
     int number_of_equations = Variables.size();
     
 
-    std::vector<std::vector<double>> tableau(number_of_equations, std::vector<double> (number_of_variables + n_slack_var + n_artificial_var + both_case*2 ,0)); // +1 in reference to RHS
+    std::vector<std::vector<long double>> tableau(number_of_equations, std::vector<long double> (number_of_variables + n_slack_var + n_artificial_var + both_case*2 ,0)); // +1 in reference to RHS
     int i = 0;
     int k = 0;
     bool reset = 1;
@@ -141,13 +130,13 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
             VB.push_back(rows_name[i]);//k+1);    
         }else if(constr.second == 2){
             tableau[constr.first][k] = 1;
-            tableau[0][k] = -100000;
+            tableau[0][k] = -BIG_M;
             VB.push_back(rows_name[i]); //k+1);
         }else if(constr.second == 3){
             tableau[constr.first][k] = -1;
             VB.push_back(rows_name[i]);  //k+2);
             tableau[constr.first][k + 1] = 1;
-            tableau[0][k+1] = -100000;
+            tableau[0][k+1] = -BIG_M;
             k++;
         }
         k++;
@@ -167,7 +156,7 @@ std::vector< std::vector<double> > get_numerical_table(int n_artificial_var,int 
 }
 
 
-std::vector< std::vector<double> > get_tableau(std::string filename){
+std::vector< std::vector<long double> > get_tableau(std::string filename){
 
 	ifstream f (filename, ios::in);
 
@@ -227,7 +216,7 @@ std::vector< std::vector<double> > get_tableau(std::string filename){
 
     //print_map(Constraints); //print the map we just saw
         
-    std::map < std::string, std::map <std::string, double>> Variables;
+    std::map < std::string, std::map <std::string,long double>> Variables;
 
     int max_size = 0;
 
@@ -252,7 +241,7 @@ std::vector< std::vector<double> > get_tableau(std::string filename){
         }
     }
 
-    std::map < std::string, double> RHS;
+    std::map < std::string,long double> RHS;
 
     while(std::getline(f,string)){
         if(!string.compare("BOUNDS") or !string.compare("ENDATA"))
@@ -276,9 +265,9 @@ std::vector< std::vector<double> > get_tableau(std::string filename){
     //print_table(Variables);
     //print_table(Constraints);
 
-    std::vector< std::vector<double> > tableau = get_numerical_table(n_artificial_var,both_case,n_slack_var,Variables ,Constraints,RHS);
+    std::vector< std::vector<long double> > tableau = get_numerical_table(n_artificial_var,both_case,n_slack_var,Variables ,Constraints,RHS);
     
-    show_tableau(tableau);
+    //show_tableau(tableau);
     // MAS DE BOA PQ OQ VC N MODIFICA ELE JA SETA COMO 0, AGORA É SÓ VER A PARADA DE MAXIMIZAR
     // MINIMIZAR E BOTAR AS PENALIDADES E VARIAVEIS DE FOLGA EITA MZRA QUE TEM COISA VIU
 	/* tem que passar pra um array agora essa mzra kkkkk */

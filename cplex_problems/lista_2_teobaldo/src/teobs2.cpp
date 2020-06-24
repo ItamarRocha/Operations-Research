@@ -17,7 +17,7 @@ int main(){
 	model.add(0.035*x1 - 0.005*x2 - 0.01*x3 - 0.015*x4 - 0.015*x5 >= 0); // creates an ilorange object
 	model.add(0.005*x1 - 0.025*x2 + 0.045*x3 - 0.035*x4 + 0.965*x5 >= 0);
 
-	model.add(x1 + x2 + x3 + x4 + x5 >= 1); // porque é uma tonelada o necessário
+	model.add(x1 + x2 + x3 + x4 + x5 == 1); // porque é uma tonelada o necessário
 
 	model.add(IloMinimize(env,1200*x1 + 1800*x2 + 500*x3 + 10000*x4 + 3800*x5));
 	std::cout << "opa" << std::endl;

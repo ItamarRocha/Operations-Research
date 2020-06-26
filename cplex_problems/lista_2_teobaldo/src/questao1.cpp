@@ -40,5 +40,10 @@ int main(){
 	std::cout << "x4 : " << cplex.getValue(x4) << std::endl;
 	std::cout << "x5 : " << cplex.getValue(x5) << std::endl;
 
+	cplex.exportModel("questao1.lp");
+
+	env.end();
+
 	exit(0);
+
 }

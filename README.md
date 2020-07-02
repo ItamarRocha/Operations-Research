@@ -3,9 +3,6 @@
 [![author](https://img.shields.io/badge/Itamar-Rocha-black.svg)](https://www.linkedin.com/in/itamarrocha) [![](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-365/)
 
 
-<p align="center">
-  <img src="https://github.com/ItamarRocha/Data-Analysis-and-Manipulation/raw/master/imgs/banner.jpeg" >
-</p>
 
 ## Table of Contents
 - [Setup](#setup)

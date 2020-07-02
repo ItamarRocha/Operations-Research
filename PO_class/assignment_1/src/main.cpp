@@ -10,7 +10,7 @@ void solve(Data* d1);
 int main(int argc, char* argv[]){
 
 	if(argc != 2){
-		std::cout << "Wrong Pattern\n./bpp instances/archive\n";
+		std::cout << "Wrong Pattern\n./pfm instances/archive\n";
 		exit(1);
 	}
 	Data d1(argv[1]);
@@ -99,6 +99,8 @@ void solve(Data *d1){
         }
         std::cout << std::endl;
     }
+
+    std::cout << "Max flow = " << d1->getMaxFlow() - mfp.getObjValue()/M << std::endl;
 
 	env.end();
 }

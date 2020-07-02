@@ -38,10 +38,11 @@ Data::Data(char* filePath)
     int edge1, edge2, cap;
     //reading capacity(A_NUMBER,std::vector<int>(OTHER_NUMBER, 4));
     capacity = std::vector<std::vector <int>> (N_edges, std::vector<int>(N_edges));
+    max_possible_flow = 0;
+
     for(int i = 0; i < N_vertex; i++) // iterates through the vertex, to store the capacity since it 
         // is given in function of the edges
     {
-
         if(fscanf(f, "%d %d %d", &edge1, &edge2, &cap) != 3) //returns the number of sucessfully assigned input items
         {
             printf("%d\n",cap);
@@ -49,9 +50,17 @@ Data::Data(char* filePath)
             exit(1);
         }
         capacity[edge1][edge2] = cap;
+        if(edge1 == 0){
+            max_possible_flow += cap;
+        }
     }
 
+
     fclose(f);
+}
+
+void Data::pfcm_convertion(){
+    capacity[initial_node][end_node] = max_possible_flow;
 }
 
 int Data::getNEdges()
@@ -67,4 +76,16 @@ int Data::getNVertex()
 int Data::getVertexCapacity(int e1, int e2)
 {
     return capacity[e1][e2]; 
+}
+
+int Data::getInitialNode(){
+    return initial_node;
+}
+
+int Data::getEndNode(){
+    return end_node;
+}
+
+int Data::getMaxFlow(){
+    return max_possible_flow;
 }

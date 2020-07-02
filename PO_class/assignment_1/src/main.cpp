@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <ilcplex/ilocplex.h>
+
 #define M 10000
 
 void solve(Data* d1);
@@ -56,13 +57,18 @@ void solve(Data *d1){
     model.add(IloMinimize(env,FO)); // we want to minmize it
 
 
-    for(int i = 0; i < d1->getNEdges(); i++){
+    for(int i = 0; i < d1->getNEdges(); i++){ // sum 0 constraint
 
         IloExpr Constraint1(env);
+        IloExpr Constraint2(env);
 
         for(int j = 0; j < d1->getNEdges(); j++){
             Constraint1 += x[i][j];
             Constraint1 -= x[j][i];
+
+            Constraint2 = x[i][j] - d1->getVertexCapacity(i,j);
+            IloRange r2 = (Constraint2 <= 0);
+            model.add(r2);
         }
         if( i == d1->getInitialNode() ){
             IloRange r = (Constraint1 == d1->getMaxFlow());
@@ -76,16 +82,23 @@ void solve(Data *d1){
         }
     }
 
-    IloCplex bpp(model);
+
+    IloCplex mfp(model);
 
     try{
-        bpp.solve();
+        mfp.solve();
     }catch(...){
         std::cout << "deu ruim" << std::endl;
     }
 
-	std::cout << "status:" << bpp.getStatus() << std::endl;
-    std::cout << "numero de bins usados:" << bpp.getObjValue() << std::endl;
+	std::cout << "status:" << mfp.getStatus() << std::endl;
+    std::cout << "Objective function:" << mfp.getObjValue() << std::endl;
+    for(int i = 0; i < d1->getNEdges(); i++){
+        for(int j = 0; j < d1->getNEdges(); j++){
+            std::cout << " X[" << i << "][" << j << "] = " << mfp.getValue(x[i][j]);
+        }
+        std::cout << std::endl;
+    }
 
 	env.end();
 }

@@ -8,19 +8,21 @@ class Data
 {
     private:
 
-        int bin_capacity;
-        int n_items;
-        std::vector<int> weights;
+        int N_edges;
+        int N_vertex;
+        int initial_node;
+        int end_node;
+        std::vector<std::vector<int>> capacity; //matrix of the values
 
     public:
 
         Data(char* filePath);
 
-        int getNItems();
+        int getNEdges();
 
-        int getBinCapacity();
+        int getNVertex();
 
-        int getItemWeight(int item);
+        int getVertexCapacity(int e1, int e2);
 };
 
 #endif

@@ -51,41 +51,41 @@ void solve(Data *d1){
 
     IloExpr FO(env);
 
-    FO += M*x[d1->getInitialNode(),d1->getEndNode()];
+    FO += M * x[d1->getInitialNode()][d1->getEndNode()];
 
-    //model.add(IloMinimize(env,FO)); // we want to minmize it
+    model.add(IloMinimize(env,FO)); // we want to minmize it
 
 
-    // for(int i = 0; i < d1->getNEdges(); i++){
+    for(int i = 0; i < d1->getNEdges(); i++){
 
-    //     IloExpr Constraint1(env);
+        IloExpr Constraint1(env);
 
-    //     for(int j = 0; j < d1->getNEdges(); j++){
-    //         Constraint1 += x[i][j];
-    //         Constraint1 -= x[j][i];
-    //     }
-    //     if( i == d1->getInitialNode() ){
-    //         IloRange r = (Constraint1 == d1->getMaxFlow());
-    //         model.add(r);
-    //     }else if( i == d1->getEndNode()){
-    //         IloRange r = (Constraint1 == d1->getMaxFlow()* -1);
-    //         model.add(r);
-    //     }else{
-    //         IloRange r = (Constraint1 == 0);
-    //         model.add(r);
-    //     }
-    // }
+        for(int j = 0; j < d1->getNEdges(); j++){
+            Constraint1 += x[i][j];
+            Constraint1 -= x[j][i];
+        }
+        if( i == d1->getInitialNode() ){
+            IloRange r = (Constraint1 == d1->getMaxFlow());
+            model.add(r);
+        }else if( i == d1->getEndNode()){
+            IloRange r = (Constraint1 == d1->getMaxFlow()* -1);
+            model.add(r);
+        }else{
+            IloRange r = (Constraint1 == 0);
+            model.add(r);
+        }
+    }
 
-    // IloCplex bpp(model);
+    IloCplex bpp(model);
 
-    // try{
-    //     bpp.solve();
-    // }catch(...){
-    //     std::cout << "deu ruim" << std::endl;
-    // }
+    try{
+        bpp.solve();
+    }catch(...){
+        std::cout << "deu ruim" << std::endl;
+    }
 
-	// std::cout << "status:" << bpp.getStatus() << std::endl;
-    // std::cout << "numero de bins usados:" << bpp.getObjValue() << std::endl;
+	std::cout << "status:" << bpp.getStatus() << std::endl;
+    std::cout << "numero de bins usados:" << bpp.getObjValue() << std::endl;
 
 	env.end();
 }

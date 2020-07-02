@@ -32,72 +32,60 @@ void solve(Data *d1){
 
 
     // Initializing the array x_ij that represents the flow
-	IloArray < IloArray > x(env,d1->getNEdges());
+	IloArray < IloNumVarArray > x(env,d1->getNEdges());
 	for(int i = 0; i < d1->getNEdges(); i++)
     {
-        IloBoolVarArray array(env, d1->getNEdges());
+        IloNumVarArray array(env, d1->getNEdges(), 0, IloInfinity);
         x[i] = array;
     }
 
-
-    // setting the name
-    for(int i = 0; i <  d1->getNEdges(); i++)
-    {
-        for(int j = 0; j < d1->getNEdges(); j++)
-        {
-            char name[10];
-            sprintf(name, "X(%d,%d)", i, j);
+    for(int i = 0; i < d1->getNEdges(); i++)
+    {   
+        for(int j = 0; j < d1->getNEdges(); j++){
+            char name[100];
+            sprintf(name, "X(%d)", i);
             x[i][j].setName(name);
-            //model.add(x[i][j]);
+            model.add(x[i][j]);
         }
     }
 
     IloExpr FO(env);
 
-    FO = x[d1->getInitialNode(),d1->getEndNode()] * M;
+    FO += M*x[d1->getInitialNode(),d1->getEndNode()];
 
-    model.add(IloMinimize(env,FO)); // we want to minmize it
+    //model.add(IloMinimize(env,FO)); // we want to minmize it
 
 
-    for(int i = 0; i < d1->getNEdges(); i++){
+    // for(int i = 0; i < d1->getNEdges(); i++){
 
-        IloExpr Constraint1(env);
-        for(int j = 0; j < d1->getNEdges(); j++){
-            Constraint1 += x[i][j];
-            Constraint1 -= x[j][i];
-        }
-        if( i == d1->getInitialNode() ){
-            IloRange r = (Constraint1 == d1->getMaxFlow());
-            model.add(r);
-        }else if( i == d1->getEndNode()){
-            IloRange r = (Constraint1 == d1->getMaxFlow()* -1);
-            model.add(r);
-        }else{
-            IloRange r = (Constraint1 == 0);
-            model.add(r);
-        }
-    }
+    //     IloExpr Constraint1(env);
 
-    for(int j = 0; j < d1->getNEdges(); j++){
+    //     for(int j = 0; j < d1->getNEdges(); j++){
+    //         Constraint1 += x[i][j];
+    //         Constraint1 -= x[j][i];
+    //     }
+    //     if( i == d1->getInitialNode() ){
+    //         IloRange r = (Constraint1 == d1->getMaxFlow());
+    //         model.add(r);
+    //     }else if( i == d1->getEndNode()){
+    //         IloRange r = (Constraint1 == d1->getMaxFlow()* -1);
+    //         model.add(r);
+    //     }else{
+    //         IloRange r = (Constraint1 == 0);
+    //         model.add(r);
+    //     }
+    // }
 
-        IloExpr Constraint2(env);
-        for(int i = 0; i < d1->getNEdges(); i++){
-            Constraint2 += d1->getItemWeight(i) * x[i][j];
-        }
-        IloRange r = (Constraint2  - d1->getBinCapacity() * y[j] <= 0);
-        model.add(r);
-    }
+    // IloCplex bpp(model);
 
-    IloCplex bpp(model);
+    // try{
+    //     bpp.solve();
+    // }catch(...){
+    //     std::cout << "deu ruim" << std::endl;
+    // }
 
-    try{
-        bpp.solve();
-    }catch(...){
-        std::cout << "deu ruim" << std::endl;
-    }
-
-	std::cout << "status:" << bpp.getStatus() << std::endl;
-    std::cout << "numero de bins usados:" << bpp.getObjValue() << std::endl;
+	// std::cout << "status:" << bpp.getStatus() << std::endl;
+    // std::cout << "numero de bins usados:" << bpp.getObjValue() << std::endl;
 
 	env.end();
 }

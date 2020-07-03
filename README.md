@@ -6,7 +6,7 @@
 
 ## Table of Contents
 - [Setup](#setup)
-- [Code](#analysis-and-practice)
+- [Code](#code)
 - [Clone](#clone)
 - [Author](#author)
 - [Support](#support)
@@ -33,7 +33,7 @@ chmod +x downloaded_file.bin
 * Make sure to check if the version in the makefile checks with the one you are installing.
 ---
 
-## Code:
+## Code
 Here are listed some of the codes presented in this repository:
 
 * [**Exercise solution list 1 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/exercises_1)

@@ -20,6 +20,7 @@ In this repository we are using Cplex. Cplex is and IBM software. If you have an
 <p align="left">
   <img src="download.jpeg" >
 </p>
+
 * After downloading, type in your terminal:
 ```shell
 chmod +x downloaded_file.bin

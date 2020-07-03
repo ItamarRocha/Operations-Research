@@ -21,7 +21,7 @@ In this repository we are using Cplex. Cplex is and IBM software. If you have an
   <img src="download.jpeg" >
 </p>
 
-* After downloading, type in your terminal:
+* After downloading, type in your terminal (where the archive is stored):
 ```shell
 chmod +x downloaded_file.bin
 ```

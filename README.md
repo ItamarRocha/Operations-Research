@@ -1,6 +1,6 @@
 # Operations Research
 
-[![author](https://img.shields.io/badge/Itamar-Rocha-black.svg)](https://www.linkedin.com/in/itamarrocha) [![](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-365/)
+[![author](https://img.shields.io/badge/Itamar-Rocha-black.svg)](https://www.linkedin.com/in/itamarrocha) ![stability-wip](https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg)
 
 
 
@@ -31,6 +31,7 @@ chmod +x downloaded_file.bin
 ```
 * Agree with the installation terms.
 * Make sure to check if the version in the makefile checks with the one you are installing.
+   * You can also install python 2.7 Cplex if you wish.
 ---
 
 ## Code

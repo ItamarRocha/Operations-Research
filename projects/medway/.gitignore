@@ -42,3 +42,4 @@ med/Epidemiológico H. Laureano - Pacientes - Página1.csv
 
 # jupyter checkpoints #
 *.ipynb_checkpoints
+test_data/*.csv

@@ -31,7 +31,7 @@ chmod +x downloaded_file.bin
 ```
 * Agree with the installation terms.
 * Make sure to check if the version in the makefile checks with the one you are installing.
-   * You can also install python 2.7 Cplex if you wish.
+   * You can also install python Cplex if you wish.
 ---
 
 ## Code

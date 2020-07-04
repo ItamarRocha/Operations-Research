@@ -5,12 +5,21 @@
 
 
 ## Table of Contents
+- [Books](#books)
 - [Setup](#setup)
 - [Code](#code)
 - [Clone](#clone)
 - [Author](#author)
 - [Support](#support)
 - [License](#license)
+---
+## Books
+* Introdução à Pesquisa Operaciona (Hiller and lierberman)
+* Introduction to linear optimization (Bertsimas)
+* Pesquisa Operacional (Arenales)
+* Otimização Linear (Maculan-Fampa)
+* Operations research aplications and algorithms (Winston)
+
 ---
 ## Setup
 In this repository we are using Cplex. Cplex is and IBM software. If you have an institutional email and is currently enroled in a university you can get the student license for free. Make sure to create an account in this <a href="https://my15.digitalexperience.ibm.com/b73a5759-c6a6-4033-ab6b-d9d4f9a6d65b/dxsites/151914d1-03d2-48fe-97d9-d21166848e65/home">site</a> with your institutional email. After setting up an account follow these steps:

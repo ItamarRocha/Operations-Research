@@ -30,6 +30,7 @@ In this repository we are using Cplex. Cplex is and IBM software. If you have an
   <img src="download.jpeg" >
 </p>
 
+**You may have to use sudo in some of the commands below**
 * After downloading, type in your terminal (where the archive is stored):
 ```shell
 chmod +x downloaded_file.bin
@@ -39,8 +40,9 @@ chmod +x downloaded_file.bin
 ./downloaded_file.bin
 ```
 * Agree with the installation terms.
-* Make sure to check if the version in the makefile checks with the one you are installing.
-   * You can also install python Cplex if you wish.
+* When testing make sure to check if the version in the makefile checks with the one you have installed.
+
+* You can also install python Cplex. Instructions will come with the folder you have downloaded
 ---
 
 ## Code

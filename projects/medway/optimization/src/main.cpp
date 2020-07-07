@@ -32,7 +32,12 @@ void solve(Data *d1){
         x[i] = array;
     }
 
+	// 
+	// OBJECTIVE FUNCTION -> In this project, our objective function will be to maximize the
+	// the sum of compatibilities(total) between students and advisors; 
+    //
 
+    IloExpr FO(env);
 
     for(int i = 0; i <  d1->getNRows(); i++)
     {
@@ -43,24 +48,18 @@ void solve(Data *d1){
             std::cout << name.str().c_str() << std::endl;
             x[i][j].setName(name.str().c_str());
             model.add(x[i][j]);
+
+            FO += x[i][j] * d1->getCompatibility(i,j);
         }
     }
+    
+    model.add(IloMaximize(env,FO)); // we want to maximize it as said before
 
 /*
-    IloBoolVarArray y(env,d1->getNItems());
-    IloExpr FO(env);
-
-    for(int j = 0; j < d1->getNItems(); j++){
-    	FO += y[j];
-    }
-
-    model.add(IloMinimize(env,FO)); // we want to minmize it
-
-
-    for(int i = 0; i < d1->getNItems(); i++){
+    for(int i = 0; i < d1->getNRows(); i++){
 
         IloExpr Constraint1(env);
-        for(int j = 0; j < d1->getNItems(); j++){
+        for(int j = 0; j < d1->getNColumns(); j++){
             Constraint1 += x[i][j];
         }
         IloRange r = (Constraint1 == 1);

@@ -129,10 +129,21 @@ std::vector<std::string> Data::stringSplit(std::string str)
     return str_vec;
 }
 
-int Data::getRowsNumber(){
+int Data::getNRows(){
     return rows_number;
 }
 
-int Data::getColumnsNumber(){
+int Data::getNColumns(){
     return columns_number;
+}
+
+std::string Data::getRowName(int index){
+    return rows[index];
+}
+std::string Data::getColumnName(int index){
+    return columns[index];
+}
+
+int Data::getCompatibility(int i, int j){
+    return compatibility_matrix[i][j];
 }

@@ -1,5 +1,6 @@
 #include "../include/Data.hpp"
 #include <ilcplex/ilocplex.h>
+#define MAX_SIZE 1000
 
 void solve(Data* d1);
 
@@ -23,28 +24,29 @@ void solve(Data *d1){
 	// DECISION VARIABLE -> In this project, the decision variable consists in a boolean array with rows representing students 
 	// and columns representing advisors. Each array variable represents if a student is placed with the correspondent advisor
 	//
-	
-	IloArray < IloBoolVarArray > x(env,);
-	for(int i = 0; i < d1->getNItems(); i++)
+
+	IloArray < IloBoolVarArray > x(env, d1->getNRows());
+	for(int i = 0; i < d1->getNRows(); i++)
     {
-        IloBoolVarArray array(env, d1->getNItems());
+        IloBoolVarArray array(env, d1->getNColumns());
         x[i] = array;
     }
 
 
-/*
-    for(int i = 0; i <  d1->getNItems(); i++)
+
+    for(int i = 0; i <  d1->getNRows(); i++)
     {
-        for(int j = 0; j < d1->getNItems(); j++)
+        for(int j = 0; j < d1->getNColumns(); j++)
         {
-            char name[10];
-            sprintf(name, "X(%d,%d)", i, j);
-            x[i][j].setName(name);
+            std::ostringstream name;
+            name << "X[" << d1->getRowName(i) << "][" << d1->getColumnName(j) << "]";
+            std::cout << name.str().c_str() << std::endl;
+            x[i][j].setName(name.str().c_str());
             model.add(x[i][j]);
         }
     }
 
-
+/*
     IloBoolVarArray y(env,d1->getNItems());
     IloExpr FO(env);
 

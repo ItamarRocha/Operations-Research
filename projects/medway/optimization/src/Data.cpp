@@ -1,53 +1,138 @@
 #include "../include/Data.hpp"
 #include <stdlib.h>
 
-Data::Data(char* filePath)
+Data::Data(char* fileMatrix, char* fileWeights, char* fileRows, char* fileColumns)
 {
-    FILE* f = fopen(filePath, "r");
+    rows_number = 0;
+    columns_number = 0;
 
-    if(!f)
+    // 
+    // READING THE ROWS NAME (STUDENTS) FILE
+    // 
+    
+    std::ifstream r (fileRows, std::ios::in);
+
+    if(!r)
     {
-        printf("Problem while reading instance.\n");
+        printf("Problem reading rows.\n");
         exit(1);
     }
 
-    if(fscanf(f, "%d", &n_items) != 1)
+    std::string input_string;
+
+    while(std::getline(r, input_string)){
+        rows.push_back(input_string);
+        rows_number++;
+    }
+
+    r.close();
+    
+    // 
+    // READING THE COLUMNS NAME (ADVISOR) FILE
+    // 
+    
+    std::ifstream c (fileColumns, std::ios::in);
+
+    if(!c)
     {
-        printf("Problem while reading instance.\n");
+        printf("Problem reading columns.\n");
         exit(1);
     }
 
-    if(fscanf(f, "%d", &bin_capacity) != 1)
-    {
-        printf("Problem while reading instance.\n");
-        exit(1);
+    while(std::getline(c, input_string)){
+        columns.push_back(input_string);
+        columns_number++;
     }
 
-    //reading weights
-    weights = std::vector<int>(n_items, 0);
-    for(int i = 0; i < n_items; i++)
-    {
-        if(fscanf(f, "%d", &weights[i]) != 1)
-        {
-            printf("Problem while reading instance.\n");
-            exit(1);
+    c.close();
+
+    // 
+    // READING THE COMPATIBILITY MATRIX FILE
+    // 
+    
+    std::ifstream fm (fileMatrix, std::ios::in);
+
+    compatibility_matrix = std::vector< std::vector <int>> (rows_number, std::vector<int>(columns_number,0));
+
+    int i = 0;
+    while(std::getline(fm, input_string)){
+        auto str_vec = stringSplit(input_string);
+
+        for(int j = 0; j < str_vec.size(); j++){
+            compatibility_matrix[i][j] = std::stoi(str_vec[j]);
+            //std::cout << " " << str_vec[j] << std::endl;
         }
+        //std::cout << std::endl;
+        i++;
     }
 
-    fclose(f);
+    fm.close();
+
+    // 
+    // READING THE WEIGHTS FILE
+    // 
+    
+    std::ifstream fw (fileWeights, std::ios::in);
+
+    time_weights = std::vector<int> (rows_number,0);
+
+    while(std::getline(fw, input_string)){
+        time_weights.push_back(std::stoi(input_string));
+        std::cout << input_string << std::endl;
+    } 
+    fw.close();
 }
 
-int Data::getNItems()
+std::string Data::stringRemoveBorders(std::string str)
 {
-    return n_items;
+    while (str[0] == ' ')
+    {
+        str.erase(str.begin());
+    }
+    while (*(str.end() - 1) == ' ')
+    {
+        str.erase(str.end() - 1);
+    }
+
+    return str;
 }
 
-int Data::getBinCapacity()
+std::vector<std::string> Data::stringSplit(std::string str)
 {
-    return bin_capacity;
+    std::vector<std::string> str_vec;
+    str = stringRemoveBorders(str);
+
+    while (str.size() != 0)
+    {
+
+        int i = 0;
+        for (char c : str)
+        {
+            if (c == ' ')
+            {
+                str_vec.push_back(std::string(str.begin(), str.begin() + i));
+                i++;
+                break;
+            }
+            else if (i == str.size() - 1)
+            {
+                str_vec.push_back(std::string(str.begin(), str.begin() + i + 1));
+                i++;
+                break;
+            }
+            i++;
+        }
+        str = std::string(str.begin() + i, str.end());
+        str = stringRemoveBorders(str);
+    }
+
+    return str_vec;
 }
 
-int Data::getItemWeight(int item)
-{
-    return weights[item]; 
+int Data::getRowsNumber(){
+    return rows_number;
+}
+
+int Data::getColumnsNumber(){
+    return columns_number;
 }

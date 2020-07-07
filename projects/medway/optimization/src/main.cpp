@@ -52,10 +52,13 @@ void solve(Data *d1){
             FO += x[i][j] * d1->getCompatibility(i,j);
         }
     }
-    
+
     model.add(IloMaximize(env,FO)); // we want to maximize it as said before
 
-/*
+	// 
+	// Constraint1 -> Limiting each student to have only one advisor
+	//     
+
     for(int i = 0; i < d1->getNRows(); i++){
 
         IloExpr Constraint1(env);
@@ -63,29 +66,40 @@ void solve(Data *d1){
             Constraint1 += x[i][j];
         }
         IloRange r = (Constraint1 == 1);
-        model.add(r);
-    }
+	    model.add(r);
+	}
 
-    for(int j = 0; j < d1->getNItems(); j++){
+	// 
+	// Constraint2 -> Limiting the number of students per advisor
+	// 
+
+    for(int j = 0; j < d1->getNColumns(); j++){
 
         IloExpr Constraint2(env);
-        for(int i = 0; i < d1->getNItems(); i++){
-            Constraint2 += d1->getItemWeight(i) * x[i][j];
+        for(int i = 0; i < d1->getNRows(); i++){
+            Constraint2 += x[i][j];
         }
-        IloRange r = (Constraint2  - d1->getBinCapacity() * y[j] <= 0);
+        IloRange r = (Constraint2  -  11 <= 0);
         model.add(r);
     }
 
-    IloCplex bpp(model);
+    IloCplex medway(model);
 
     try{
-        bpp.solve();
+        medway.solve();
     }catch(...){
         std::cout << "deu ruim" << std::endl;
     }
 
-	std::cout << "status:" << bpp.getStatus() << std::endl;
-    std::cout << "numero de bins usados:" << bpp.getObjValue() << std::endl;
-*/
+	std::cout << "status:" << medway.getStatus() << std::endl;
+    std::cout << "Total Compat:" << medway.getObjValue() << std::endl;
+
+    for(int i = 0; i < d1->getNColumns(); i++){
+    	for(int j = 0; j < d1->getNRows(); j++){
+    		int value = medway.getValue(x[j][i]);
+    		if(value > 0)
+    			std::cout << x[j][i].getName() << std::endl;
+    	}
+    }
 	env.end();
 }

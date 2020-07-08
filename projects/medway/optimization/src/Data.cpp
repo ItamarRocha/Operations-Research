@@ -1,7 +1,7 @@
 #include "../include/Data.hpp"
 #include <stdlib.h>
 
-Data::Data(char* fileMatrix, char* fileWeights, char* fileRows, char* fileColumns)
+Data::Data(char* fileMatrix, char* fileWeights, char* fileRows, char* fileColumns, char* lower_bounds)
 {
     rows_number = 0;
     columns_number = 0;
@@ -52,6 +52,12 @@ Data::Data(char* fileMatrix, char* fileWeights, char* fileRows, char* fileColumn
     
     std::ifstream fm (fileMatrix, std::ios::in);
 
+    if(!fm)
+    {
+        printf("Problem reading compatibility_matrix.\n");
+        exit(1);
+    }
+
     compatibility_matrix = std::vector< std::vector <int>> (rows_number, std::vector<int>(columns_number,0));
 
     int i = 0;
@@ -74,22 +80,54 @@ Data::Data(char* fileMatrix, char* fileWeights, char* fileRows, char* fileColumn
     
     std::ifstream fw (fileWeights, std::ios::in);
 
+    if(!fw)
+    {
+        printf("Problem reading weights.\n");
+        exit(1);
+    }
+
     time_weights = std::vector<int> (rows_number,0);
 
     while(std::getline(fw, input_string)){
         time_weights.push_back(std::stoi(input_string));
-        std::cout << input_string << std::endl;
+        //std::cout << input_string << std::endl;
     } 
     fw.close();
+
+    // 
+    // READING THE LOWER BOUND // INITIAL VALUES TO TIME AND NUMBER OF STUDENTS
+    // 
+    //     
+
+    std::ifstream lb (lower_bounds, std::ios::in);
+
+    if(!lb)
+    {
+        printf("Problem reading lower bounds.\n");
+        exit(1);
+    }
+
+    // note for me: dont define the size and fill it with zeros if you are goint to
+    // push values into a vector dumbass ;-; 
+
+    while(std::getline(lb, input_string)){
+        auto str_vec = stringSplit(input_string);
+        //std::cout << str_vec.size() << std::endl;
+        NFixedStudents.push_back(std::stoi(str_vec[0]));
+        LowerBoundTime.push_back(std::stoi(str_vec[1]));
+        //std::cout << str_vec[0] << " <- students || time -> " << str_vec[1] << std::endl;
+    }
+    //std::cout << NFixedStudents[0] << std::endl;
+    lb.close();
 }
 
 std::string Data::stringRemoveBorders(std::string str)
 {
-    while (str[0] == ' ')
+    while (str[0] == ' ' || str[0] == ',')
     {
         str.erase(str.begin());
     }
-    while (*(str.end() - 1) == ' ')
+    while (*(str.end() - 1) == ' ' || *(str.end() - 1) == ',')
     {
         str.erase(str.end() - 1);
     }
@@ -108,7 +146,7 @@ std::vector<std::string> Data::stringSplit(std::string str)
         int i = 0;
         for (char c : str)
         {
-            if (c == ' ')
+            if (c == ' ' || c == ',')
             {
                 str_vec.push_back(std::string(str.begin(), str.begin() + i));
                 i++;
@@ -146,4 +184,12 @@ std::string Data::getColumnName(int index){
 
 int Data::getCompatibility(int i, int j){
     return compatibility_matrix[i][j];
+}
+
+int Data::getLowerBoundTime(int assessor_index){
+    return LowerBoundTime[assessor_index];
+}
+
+int Data::getNFixedStudents(int assessor_index){
+    return NFixedStudents[assessor_index];
 }

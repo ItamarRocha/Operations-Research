@@ -1,18 +1,26 @@
 #include "../include/Data.hpp"
 #include <ilcplex/ilocplex.h>
 #define MAX_SIZE 1000
-
+#define TOTAL_STUDENTS 219
+#define TOTAL_ADVISORS 15
 void solve(Data* d1);
 
 int main(int argc, char* argv[]){
 
-	if(argc != 5){
+	if(argc != 6){
 		std::cout << "Wrong Pattern\n./bpp instances/compatibility_matrix instances/weights instances/rows instances/columns\n";
 		exit(1);
 	}
-	Data d1(argv[1], argv[2], argv[3], argv[4]);
+	Data d1(argv[1], argv[2], argv[3], argv[4], argv[5]);
 	solve(&d1);
-
+	//std::cout << d1.getNFixedStudents(0) << std::endl;
+/*	for(int i = 0; i < d1.getNRows(); i++){
+		for(int j = 0; j < d1.getNColumns(); j++){
+			std::cout << d1.getCompatibility(i,j) << " ";
+		}
+		std::cout << std::endl;
+	}
+*/
 	exit(0);
 }
 
@@ -45,7 +53,7 @@ void solve(Data *d1){
         {
             std::ostringstream name;
             name << "X[" << d1->getRowName(i) << "][" << d1->getColumnName(j) << "]";
-            std::cout << name.str().c_str() << std::endl;
+            //std::cout << name.str().c_str() << std::endl;
             x[i][j].setName(name.str().c_str());
             model.add(x[i][j]);
 
@@ -70,7 +78,8 @@ void solve(Data *d1){
 	}
 
 	// 
-	// Constraint2 -> Limiting the number of students per advisor
+	// Constraint2 -> Limiting the number of students per advisor taking 
+	//	into consideration the number of fixed students they have
 	// 
 
     for(int j = 0; j < d1->getNColumns(); j++){
@@ -78,10 +87,18 @@ void solve(Data *d1){
         IloExpr Constraint2(env);
         for(int i = 0; i < d1->getNRows(); i++){
             Constraint2 += x[i][j];
+        	//std::cout << d1->getCompatibility(i,j) << " ";
         }
-        IloRange r = (Constraint2  -  11 <= 0);
-        model.add(r);
+        std::cout << d1->getNFixedStudents(j) << std::endl;
+        IloRange r = (Constraint2  -  15 + d1->getNFixedStudents(j) <= 0);
+        model.add(r); // add the number of students for this advisor must be <= 15
+        IloRange r2 = (Constraint2 - 14 + d1->getNFixedStudents(j) >= 0);
+    	model.add(r2); // add the number of students for this advisor must be >= 14
     }
+
+	// 
+	// Constraint 3 -> lowerbound of the advisors
+	//     
 
     IloCplex medway(model);
 

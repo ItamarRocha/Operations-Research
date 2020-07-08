@@ -86,8 +86,6 @@ Data::Data(char* fileMatrix, char* fileWeights, char* fileRows, char* fileColumn
         exit(1);
     }
 
-    time_weights = std::vector<int> (rows_number,0);
-
     while(std::getline(fw, input_string)){
         time_weights.push_back(std::stoi(input_string));
         //std::cout << input_string << std::endl;
@@ -184,6 +182,10 @@ std::string Data::getColumnName(int index){
 
 int Data::getCompatibility(int i, int j){
     return compatibility_matrix[i][j];
+}
+
+int Data::getTimeWeight(int i){
+    return time_weights[i];
 }
 
 int Data::getLowerBoundTime(int assessor_index){

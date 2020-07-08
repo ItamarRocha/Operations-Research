@@ -78,7 +78,7 @@ void solve(Data *d1){
 	}
 
 	// 
-	// Constraint2 -> Limiting the number of students per advisor taking 
+	// Constraints 2 and 3 -> Limiting the number of students per advisor taking 
 	//	into consideration the number of fixed students they have
 	// 
 
@@ -89,7 +89,7 @@ void solve(Data *d1){
             Constraint2 += x[i][j];
         	//std::cout << d1->getCompatibility(i,j) << " ";
         }
-        std::cout << d1->getNFixedStudents(j) << std::endl;
+        //std::cout << d1->getNFixedStudents(j) << std::endl;
         IloRange r = (Constraint2  -  15 + d1->getNFixedStudents(j) <= 0);
         model.add(r); // add the number of students for this advisor must be <= 15
         IloRange r2 = (Constraint2 - 14 + d1->getNFixedStudents(j) >= 0);
@@ -97,8 +97,28 @@ void solve(Data *d1){
     }
 
 	// 
-	// Constraint 3 -> lowerbound of the advisors
-	//     
+	// Constraint 4 -> taking into consideration the time and using bounds to make
+	// the work equal to all advisors
+    //
+
+    for(int j = 0; j < d1->getNColumns(); j++){
+    	
+    	IloExpr Constraint3(env);
+    	for(int i = 0; i < d1->getNRows(); i++){
+    		Constraint3 += x[i][j] * d1->getTimeWeight(i);
+    		std::cout << " i : "<< i << " j : " << j << " = " << d1->getTimeWeight(i) << std::endl;
+    	}
+
+    	//// get all the time
+    	// and sum with the fixed time (lower bound) of the advisor 
+    	std::cout << d1->getLowerBoundTime(j) << std::endl;
+    	IloRange r = (Constraint3 + d1->getLowerBoundTime(j) - 61 <= 0); 
+    	model.add(r); // adddint the upperbound, must be less than 61
+    	IloRange r2 = (Constraint3 + d1->getLowerBoundTime(j) - 59 >= 0);
+    	model.add(r2); // adding the lower bound, all must be above 59
+    }
+
+
 
     IloCplex medway(model);
 

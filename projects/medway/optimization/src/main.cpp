@@ -8,7 +8,7 @@ void solve(Data* d1);
 int main(int argc, char* argv[]){
 
 	if(argc != 6){
-		std::cout << "Wrong Pattern\n./bpp instances/compatibility_matrix instances/weights instances/rows instances/columns\n";
+		std::cout << "Wrong Pattern\n./bpp instances/compatibility_matrix instances/weights instances/rows instances/columns instances/effort\n";
 		exit(1);
 	}
 	Data d1(argv[1], argv[2], argv[3], argv[4], argv[5]);
@@ -52,7 +52,7 @@ void solve(Data *d1){
         for(int j = 0; j < d1->getNColumns(); j++)
         {
             std::ostringstream name;
-            name << "X[" << d1->getRowName(i) << "][" << d1->getColumnName(j) << "]";
+            name << d1->getColumnName(j) <<","<< d1->getRowName(i);
             //std::cout << name.str().c_str() << std::endl;
             x[i][j].setName(name.str().c_str());
             model.add(x[i][j]);
@@ -106,12 +106,12 @@ void solve(Data *d1){
     	IloExpr Constraint3(env);
     	for(int i = 0; i < d1->getNRows(); i++){
     		Constraint3 += x[i][j] * d1->getTimeWeight(i);
-    		std::cout << " i : "<< i << " j : " << j << " = " << d1->getTimeWeight(i) << std::endl;
+    		//std::cout << " i : "<< i << " j : " << j << " = " << d1->getTimeWeight(i) << std::endl;
     	}
 
     	//// get all the time
     	// and sum with the fixed time (lower bound) of the advisor 
-    	std::cout << d1->getLowerBoundTime(j) << std::endl;
+    	//std::cout << d1->getLowerBoundTime(j) << std::endl;
     	IloRange r = (Constraint3 + d1->getLowerBoundTime(j) - 61 <= 0); 
     	model.add(r); // adddint the upperbound, must be less than 61
     	IloRange r2 = (Constraint3 + d1->getLowerBoundTime(j) - 59 >= 0);
@@ -130,13 +130,16 @@ void solve(Data *d1){
 
 	std::cout << "status:" << medway.getStatus() << std::endl;
     std::cout << "Total Compat:" << medway.getObjValue() << std::endl;
-
-    for(int i = 0; i < d1->getNColumns(); i++){
-    	for(int j = 0; j < d1->getNRows(); j++){
-    		int value = medway.getValue(x[j][i]);
-    		if(value > 0)
-    			std::cout << x[j][i].getName() << std::endl;
+    
+    for(int j = 0; j < d1->getNColumns(); j++){
+    	for(int i = 0; i < d1->getNRows(); i++){
+    		int value = medway.getValue(x[i][j]);
+    		if(value > 0){
+    			std::cout << x[i][j].getName() << "," << d1->getTimeWeight(i) << std::endl;
+    		}
     	}
     }
+
+
 	env.end();
 }

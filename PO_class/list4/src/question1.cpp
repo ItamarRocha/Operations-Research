@@ -3,6 +3,7 @@
 #define SIZE 20
 #define VARIABLE_RANGE 9
 #define SQUARE_SIDE 3
+#define MAGIC_SQUARE_SUM 15
 int main(){
 
 	IloEnv env;
@@ -68,69 +69,59 @@ int main(){
 		model.add(r);
 	}
 
+	// 	
+	// CONSTRAINT 3 -> sum over lines must be equal 15
+	// 
 
-
-
-	/*for(int i = 0; i < SQUARE_SIDE; i++){
-		IloExpr Constraint1(env); // PEGA A SOMA DAS LINHAS
-		IloExpr Constraint2(env); // PEGA A SOMA DAS COLUNAS
-		
-		for(int j = 0; i < SQUARE_SIDE; i++){
-			Constraint1 += x[i][j];		
-			Constraint2 += x[j][i];
+	for(int i = 0; i < SQUARE_SIDE; i++){
+		IloExpr Constraint3(env);
+		for(int j = 0; j < SQUARE_SIDE; j++){
+			for(int k = 0; k < VARIABLE_RANGE; k++){
+				Constraint3 += x[i][j][k] * (k + 1);
+			}
 		}
-		IloRange r1 = (Constraint1 == 15);
-		IloRange r2 = (Constraint2 == 15);
-		model.add(r1);
-		model.add(r2);
-	}*/
+		IloRange r = (Constraint3 == MAGIC_SQUARE_SUM);
+		model.add(r);
+	}
 
-/*	IloExpr Constraint1(env);
-	Constraint1 = x[0][0] + x[0][1] + x[0][2];
-	IloRange r1 = (Constraint1 == 15);
-	model.add(r1);
+	// 
+	// CONSTRAINT 4 -> sum over columns must be equal 15
+	// 	
 
-	IloExpr Constraint2(env);
-	Constraint2 = x[1][0] + x[1][1] + x[1][2];
-	IloRange r2 = (Constraint2 == 15);
-	model.add(r2);
+	for(int j = 0; j < SQUARE_SIDE; j++){
+		IloExpr Constraint4(env);
+		for(int i = 0; i < SQUARE_SIDE; i++){
+			for(int k = 0; k < VARIABLE_RANGE; k++){
+				Constraint4 += x[i][j][k] * (k + 1);
+			}
+		}
+		IloRange r = (Constraint4 == MAGIC_SQUARE_SUM);
+		model.add(r);
+	}
+	
+	// 
+	// CONSTRAINT 5 -> sum over first diagonal must be equal 15
+	// CONSTRAINT 6 -> sum over secondary diagonal must be equal 15
+	//
 
 	IloExpr Constraint5(env);
-	Constraint5 = x[2][0] + x[2][1] + x[2][2];
-	IloRange r5 = (Constraint5 == 15);
-	model.add(r5);
-
 	IloExpr Constraint6(env);
-	Constraint6 = x[0][0] + x[1][0] + x[2][0];
-	IloRange r6 = (Constraint6 == 15);
-	model.add(r6);
 
-	IloExpr Constraint7(env);
-	Constraint7 = x[0][1] + x[1][1] + x[2][1];
-	IloRange r7 = (Constraint7 == 15);
-	model.add(r7);
+	for(int i = 0; i < SQUARE_SIDE; i++){
+		for(int k = 0; k < VARIABLE_RANGE; k++){
+			Constraint5 += x[i][i][k] * (k + 1);
+			Constraint6 += x[i][SQUARE_SIDE - 1 - i][k] * (k + 1);
+		}
+	}
+	IloRange r = (Constraint5 == MAGIC_SQUARE_SUM);
+	IloRange r2 = (Constraint6 == MAGIC_SQUARE_SUM);
+	model.add(r);
+	model.add(r2);
+		
+	// 
+	// SOLVING THE MODEL	
+	// 	
 
-	IloExpr Constraint8(env);
-	Constraint8 = x[0][2] + x[1][2] + x[2][2];
-	IloRange r8 = (Constraint8 == 15);
-	model.add(r8);
-*/
-	// IloExpr Constraint3(env); // SOMA DA DIAGONAL PRINCIPAL
-	// IloExpr Constraint4(env); // SOMA DA DIAGONAL OPOSTA
-
-	// int k = SQUARE_SIDE - 1;
-
-	// for(int i = 0; i < SQUARE_SIDE; i++){
-	// 	Constraint3 += x[i][i];
-	// 	Constraint4 += x[i][k];
-	// 	k--;
-	// }
-	// IloRange r3 = (Constraint3 == 15);
-	// IloRange r4 = (Constraint4 == 15);
-	// model.add(r3);
-	// model.add(r4);
-
-	
 	IloCplex cplex(model);
 
 	try
@@ -148,9 +139,8 @@ int main(){
 		for(int j = 0; j < SQUARE_SIDE; j++){
 			for(int k = 0; k < VARIABLE_RANGE; k++){
 				if(cplex.getValue(x[i][j][k]) > 0.00001)
-					std::cout << " x["<< i <<"]["<< j <<"][" << k << "] : " << cplex.getValue(x[i][j][k]);
+					std::cout << " x["<< i <<"]["<< j <<"] : " << cplex.getValue(x[i][j][k])* (k+1);
 			}
-			std::cout << std::endl;
 		}
 		std::cout << std::endl;
 	}

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ilcplex/ilocplex.h>
-#define SIZE 10
+#define SIZE 20
+#define VARIABLE_RANGE 9
 #define SQUARE_SIDE 3
 int main(){
 
@@ -8,36 +9,68 @@ int main(){
 	IloModel model(env);
 
 
-	IloArray < IloNumVarArray > x(env,SQUARE_SIDE);
-	// criando um array pras variaveis e adicionando as ao modelo
+	IloArray < IloArray <IloBoolVarArray >> x(env,SQUARE_SIDE);
+	// creating a triple matrix to the variables
+
 	for(int i = 0; i < SQUARE_SIDE; i++){
-		IloNumVarArray array(env, SQUARE_SIDE, 0, 9);
+		IloArray < IloBoolVarArray > array(env,SQUARE_SIDE);
 		x[i] = array;
+		for(int j = 0; j < SQUARE_SIDE; j++){
+			IloBoolVarArray variables(env, VARIABLE_RANGE);
+			x[i][j] = variables;
+
+		}
 	}
 
 	for(int i = 0; i < SQUARE_SIDE; i++){
 		for(int j = 0; j < SQUARE_SIDE; j++){
-			char name[SIZE];
-			sprintf(name,"X%d%d",i,j);
-			x[i][j].setName(name);
-			model.add(x[i][j]);
+			for(int k = 0; k < VARIABLE_RANGE; k++){
+				char name[SIZE];
+				sprintf(name,"X[%d][%d][%d]",i,j,k);
+				x[i][j][k].setName(name);
+				model.add(x[i][j][k]);
+			}
 		}
 	}
+	//std::cout << x[2][2][8].getName() << std::endl;
 
+	IloExpr FO(env); // empty objective function since we dont need it
+					 // we can solve the problem just with the constraints
 
-	IloExpr FO(env);
-	int n = 1;
-	for(int i = 0; i < SQUARE_SIDE; i++){
-		for(int j = 0; j < SQUARE_SIDE; j++){
-			FO += n - x[i][j];
-			n++;
-		}
-	}
 	model.add(IloMinimize(env,FO));
 
-	// could have done all restriction in only one double loop but
-	// for some reason it was giving me segmentation fault. (ill try to solve
-	// this later ).
+	// 	
+	// CONSTRAINT 1 -> there can be only one number at each bool array
+	// 
+	for(int i = 0; i < SQUARE_SIDE; i++){
+		for(int j = 0; j < SQUARE_SIDE; j++){
+			IloExpr Constraint1(env);
+			for(int k = 0; k < VARIABLE_RANGE; k++){
+				Constraint1 += x[i][j][k];
+			}
+			IloRange r = (Constraint1 == 1);
+			model.add(r);
+		}
+	}
+
+	// 
+	// CONSTRAINT 2 -> each number can only appear one time
+	//
+
+	for(int k = 0; k < VARIABLE_RANGE; k++){
+		IloExpr Constraint2(env);
+		for(int i = 0; i < SQUARE_SIDE; i++){
+			for(int j = 0; j < SQUARE_SIDE; j++){
+				Constraint2 += x[i][j][k];
+			}
+		}
+		IloRange r = (Constraint2 == 1);
+		model.add(r);
+	}
+
+
+
+
 	/*for(int i = 0; i < SQUARE_SIDE; i++){
 		IloExpr Constraint1(env); // PEGA A SOMA DAS LINHAS
 		IloExpr Constraint2(env); // PEGA A SOMA DAS COLUNAS
@@ -82,20 +115,20 @@ int main(){
 	IloRange r8 = (Constraint8 == 15);
 	model.add(r8);
 */
-	IloExpr Constraint3(env); // SOMA DA DIAGONAL PRINCIPAL
-	IloExpr Constraint4(env); // SOMA DA DIAGONAL OPOSTA
+	// IloExpr Constraint3(env); // SOMA DA DIAGONAL PRINCIPAL
+	// IloExpr Constraint4(env); // SOMA DA DIAGONAL OPOSTA
 
-	int k = SQUARE_SIDE - 1;
+	// int k = SQUARE_SIDE - 1;
 
-	for(int i = 0; i < SQUARE_SIDE; i++){
-		Constraint3 += x[i][i];
-		Constraint4 += x[i][k];
-		k--;
-	}
-	IloRange r3 = (Constraint3 == 15);
-	IloRange r4 = (Constraint4 == 15);
-	model.add(r3);
-	model.add(r4);
+	// for(int i = 0; i < SQUARE_SIDE; i++){
+	// 	Constraint3 += x[i][i];
+	// 	Constraint4 += x[i][k];
+	// 	k--;
+	// }
+	// IloRange r3 = (Constraint3 == 15);
+	// IloRange r4 = (Constraint4 == 15);
+	// model.add(r3);
+	// model.add(r4);
 
 	
 	IloCplex cplex(model);
@@ -113,7 +146,11 @@ int main(){
 	std::cout << "Z : " << cplex.getObjValue() << std::endl;
 	for(int i = 0; i < SQUARE_SIDE; i++){
 		for(int j = 0; j < SQUARE_SIDE; j++){
-			std::cout << " x["<< i <<"]["<< j <<"] : " << cplex.getValue(x[i][j]);
+			for(int k = 0; k < VARIABLE_RANGE; k++){
+				if(cplex.getValue(x[i][j][k]) > 0.00001)
+					std::cout << " x["<< i <<"]["<< j <<"][" << k << "] : " << cplex.getValue(x[i][j][k]);
+			}
+			std::cout << std::endl;
 		}
 		std::cout << std::endl;
 	}

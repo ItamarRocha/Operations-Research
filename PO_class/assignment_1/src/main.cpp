@@ -78,12 +78,9 @@ void solve(Data *d1){
         }else if( i == d1->getEndNode()){
 
         	for(auto start_node: start_nodes){
-        		//std::cout << "start nodes : " << start_node << std::endl;
-        		//std::cout << "max flow in main :" << d1->getMaxFlow(start_node) << std::endl;
-            	max_flow += d1->getMaxFlow(start_node); //limits to the maximum flow in the exit node which is the sum of the flows 
+	           	max_flow += d1->getMaxFlow(start_node); //limits to the maximum flow in the exit node which is the sum of the flows 
             }
-            //std::cout << "Max flow : " << max_flow << std::endl;
-        	IloRange r = (Constraint1 == max_flow* -1);
+            IloRange r = (Constraint1 == max_flow* -1);
         	model.add(r);
     	
         }else{
@@ -110,7 +107,7 @@ void solve(Data *d1){
         }
         std::cout << std::endl;
     }
-
+    // o fluxo maximo vai ser o maximo possivel menos o que passou pelo arco que tem custo
     std::cout << "Max flow = " << max_flow - mfp.getObjValue() << std::endl; //remove the number of paths that went through the penalty paths
 
 	env.end();

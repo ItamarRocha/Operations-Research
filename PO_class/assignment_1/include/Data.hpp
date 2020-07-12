@@ -38,6 +38,7 @@ class Data
         int getMaxFlow(int i);
 
         std::unordered_set<int> getStartNodes();
+
 };
 
 #endif

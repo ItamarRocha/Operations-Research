@@ -51,9 +51,7 @@ Data::Data(char* filePath)
             exit(1);
         }
         capacity[vertex1][vertex2] = cap;
-        // if(vertex1 == initial_node){
-        //     max_possible_flow += cap;
-        // }
+
         if(vertices1.find(vertex1) == vertices1.end()){ // checa se ja ta inserido pra nao inserir dnv
             vertices1.insert(vertex1);
         }   
@@ -72,7 +70,6 @@ Data::Data(char* filePath)
     start_nodes = vertices1; //só ficou os nós de início (ou seja, os que nao tem ngn enviando pra eles)
 
     max_possible_flow = std::vector <int> (start_nodes.size());
-    //std::cout << "start nodes size "<< start_nodes.size() << std::endl;
 
     // 
     // Aqui a gente ta iterando por cada no de entrada e somando a capacidade maxima de saida
@@ -83,9 +80,7 @@ Data::Data(char* filePath)
     {
         for(int j = 0; j < N_vertex; j++){
             max_possible_flow[i] += capacity[i][j];
-            // std::cout << capacity[i][j] << std::endl;
-            // std::cout <<"max flow ["<< i << "]" << max_possible_flow[i] << std::endl;
-       }
+        }
     }
 
     fclose(f);

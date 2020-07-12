@@ -3,17 +3,20 @@
 
 #include <vector>
 #include <stdio.h>
+#include <unordered_set>
+#include <iostream>
 
 class Data
 {
     private:
 
-        int N_edges;
         int N_vertex;
+        int N_edges;
         int initial_node;
         int end_node;
-        int max_possible_flow;
+        std::vector<int> max_possible_flow;
         std::vector<std::vector<int>> capacity; //matrix of the values
+        std::unordered_set<int> start_nodes;
 
     public:
 
@@ -21,17 +24,19 @@ class Data
 
         void pfcm_convertion();
 
-        int getNEdges();
-
         int getNVertex();
 
-        int getVertexCapacity(int e1, int e2);
+        int getNEdge();
+
+        int getEdgeCapacity(int v1, int v2);
 
         int getInitialNode();
 
         int getEndNode();
 
-        int getMaxFlow();
+        int getMaxFlow(int i);
+
+        std::unordered_set<int> getStartNodes();
 };
 
 #endif

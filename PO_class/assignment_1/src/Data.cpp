@@ -1,5 +1,4 @@
 #include "../include/Data.hpp"
-#include <stdlib.h>
 
 Data::Data(char* filePath)
 {

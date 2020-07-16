@@ -3,7 +3,7 @@
 Data::Data(char* filePath)
 {
     FILE* f = fopen(filePath, "r");
-
+    
     if(!f)
     {
         printf("Problem while reading instance. Check file.\n");

@@ -72,7 +72,7 @@ void solve(Data *d1){
             model.add(r2);
         }
         if(start_nodes.find(i) != start_nodes.end()){
-        	//std::cout <<"start node : "<< i << std::endl;
+        	std::cout <<"start node : "<< i << std::endl;
             IloRange r = (Constraint1 == d1->getMaxFlow(i)); // limits the flow on each initial node
             model.add(r);
         }else if( i == d1->getEndNode()){

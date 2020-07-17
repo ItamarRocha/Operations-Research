@@ -23,11 +23,12 @@ d1 = Main.DataReader.Data(0,0,0,0,[],[])
 
 capacity, d1 = Main.DataReader.readData(filepath)
 
-costs = zeros(Int64,d1.N_vertex)
+costs = zeros(Int64,(d1.N_vertex, d1.N_vertex))
 
+# costs ok
 for i in 1:d1.N_vertex
   if i in d1.start_nodes
-    costs[i] = 1
+    costs[i,d1.end_node] = 1
   end
 end
 
@@ -42,28 +43,31 @@ for i in 1:d1.N_vertex
   for j in 1:d1.N_vertex
     cap = capacity[i,j]
     #println("x[$i,$j] = $cap")
-    @constraint(mcfp, x[i,j] - capacity[i,j] == 0)
+    @constraint(mcfp, x[i,j] - capacity[i,j] <= 0)
   end
 end
 
 #sum 0
 for i in 1:d1.N_vertex
   if i in d1.start_nodes
-    println(i)
-    @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:d1.N_vertex) == d1.max_possible_flow[i])
+    #println(d1.max_possible_flow[i]) taok
+    @constraint(mcfp, sum(x[i,:] - x[:,i]) == d1.max_possible_flow[i])
   elseif i == d1.end_node
+    #println("end $i")
     max_end_flow = 0
     for node in d1.start_nodes
       max_end_flow += d1.max_possible_flow[node]
     end
     #println(max_end_flow) essa parte ta ok vium
-    @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:d1.N_vertex) == max_end_flow * -1)
+    @constraint(mcfp, sum(x[i,:] - x[:,i]) == max_end_flow * -1)
   else
-    @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:d1.N_vertex) == 0)
+    #println("transshipment $i")
+    @constraint(mcfp, sum(x[i,:] - x[:,i]) == 0)
   end
 end
-@objective(mcfp, Min, sum(x[i] * costs[i] for i in 1:d1.N_vertex))
 
-# optimize!(mcfp)
-# println(objective_value(mcfp))
-# #@show value. (x)
+#@objective(mcfp, Min, sum(x[i,j] * costs[i,j] for i = 1:d1.N_vertex, j = 1:d1.N_vertex))
+@objective(mcfp, Min, x[1,10] * costs[1,10] + x[2,10] * costs[2,10] + x[3,10] * costs[3,10])
+optimize!(mcfp)
+@show objective_value(mcfp)
+#@show value.(x)

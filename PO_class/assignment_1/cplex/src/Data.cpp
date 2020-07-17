@@ -27,13 +27,13 @@ Data::Data(char* filePath)
         printf("Problem while reading instance. Check Initial node.\n");
         exit(1);
     }
-
+    initial_node -= 1;
     if(fscanf(f, "%d", &end_node) != 1)
     {
         printf("Problem while reading instance. Check End node.\n");
         exit(1);
     }
-
+    end_node -= 1;
     int vertex1, vertex2, cap;
     //reading capacity(A_NUMBER,std::vector<int>(OTHER_NUMBER, 4));
     capacity = std::vector<std::vector <int>> (N_vertex, std::vector<int>(N_vertex));
@@ -50,6 +50,8 @@ Data::Data(char* filePath)
             printf("Problem while reading instance.\n");
             exit(1);
         }
+        vertex1 -= 1;
+        vertex2 -= 1;
         capacity[vertex1][vertex2] = cap;
 
         if(vertices1.find(vertex1) == vertices1.end()){ // checa se ja ta inserido pra nao inserir dnv

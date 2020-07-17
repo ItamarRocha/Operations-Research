@@ -72,7 +72,7 @@ void solve(Data *d1){
             model.add(r2);
         }
         if(start_nodes.find(i) != start_nodes.end()){
-        	std::cout <<"start node : "<< i << std::endl;
+        	//std::cout <<"maxflow "<< d1->getMaxFlow(i) << std::endl;
             IloRange r = (Constraint1 == d1->getMaxFlow(i)); // limits the flow on each initial node
             model.add(r);
         }else if( i == d1->getEndNode()){
@@ -103,7 +103,7 @@ void solve(Data *d1){
     for(int i = 0; i < d1->getNVertex(); i++){
         for(int j = 0; j < d1->getNVertex(); j++){
         	if(mfp.getValue(x[i][j]) > 0.01)
-            	std::cout << " X[" << i << "][" << j << "] = " << mfp.getValue(x[i][j]);
+            	std::cout << " X[" << i + 1 << "][" << j + 1 << "] = " << mfp.getValue(x[i][j]);
         }
         std::cout << std::endl;
     }

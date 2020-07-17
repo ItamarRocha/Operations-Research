@@ -1,6 +1,8 @@
 using JuMP
 using GLPK
 using LinearAlgebra
+import MathOptInterface # Replaces MathProgBase
+const MOI = MathOptInterface
 include("Data.jl")
 
 # Int8: -128 -> 127
@@ -51,7 +53,7 @@ end
 for i in 1:d1.N_vertex
   if i in d1.start_nodes
     #println(d1.max_possible_flow[i]) taok
-    @constraint(mcfp, sum(x[i,:] - x[:,i]) == d1.max_possible_flow[i])
+    @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == d1.max_possible_flow[i])
   elseif i == d1.end_node
     #println("end $i")
     max_end_flow = 0
@@ -59,15 +61,17 @@ for i in 1:d1.N_vertex
       max_end_flow += d1.max_possible_flow[node]
     end
     #println(max_end_flow) essa parte ta ok vium
-    @constraint(mcfp, sum(x[i,:] - x[:,i]) == max_end_flow * -1)
+    @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == max_end_flow * -1)
   else
     #println("transshipment $i")
-    @constraint(mcfp, sum(x[i,:] - x[:,i]) == 0)
+    @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == 0)
   end
 end
 
 #@objective(mcfp, Min, sum(x[i,j] * costs[i,j] for i = 1:d1.N_vertex, j = 1:d1.N_vertex))
-@objective(mcfp, Min, x[1,10] * costs[1,10] + x[2,10] * costs[2,10] + x[3,10] * costs[3,10])
-optimize!(mcfp)
-@show objective_value(mcfp)
+@objective(mcfp, Min, sum(costs[i,j] * x[i,j] for i in 1:n, j in 1:n))
+JuMP.optimize!(mcfp)
+@show JuMP.termination_status(mcfp) == MOI.OPTIMAL
+
+#@show objective_value(mcfp)
 #@show value.(x)

@@ -27,8 +27,8 @@ export Data
       #while !eof(f)
       d1.N_vertex = parse(Int64,readline(f))
       d1.N_edges = parse(Int64,readline(f))
-      d1.initial_node = parse(Int64,readline(f)) + 1
-      d1.end_node = parse(Int64,readline(f)) + 1
+      d1.initial_node = parse(Int64,readline(f))
+      d1.end_node = parse(Int64,readline(f))
     
       d1.start_nodes = zeros(Int64, d1.N_vertex)
       
@@ -43,8 +43,8 @@ export Data
 
       for n in 1:d1.N_edges
         line = readline(f)
-        vertex1 = parse(Int64,split(line, " ")[1]) + 1
-        vertex2 = parse(Int64,split(line, " ")[2]) + 1
+        vertex1 = parse(Int64,split(line, " ")[1])
+        vertex2 = parse(Int64,split(line, " ")[2])
         cap = parse(Int64,split(line, " ")[3])
         #println("Vertex --> x[$vertex1,$vertex2] = $cap")
         capacity[vertex1, vertex2] = cap

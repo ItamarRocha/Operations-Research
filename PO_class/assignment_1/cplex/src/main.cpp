@@ -118,5 +118,8 @@ void solve(Data *d1){
     // o fluxo maximo vai ser o maximo possivel menos o que passou pelo arco que tem custo
     std::cout << "Max flow = " << max_flow - mfp.getObjValue() << std::endl; //remove the number of paths that went through the penalty paths
 
+
+    mfp.exportModel("model.lp");
+
 	env.end();
 }

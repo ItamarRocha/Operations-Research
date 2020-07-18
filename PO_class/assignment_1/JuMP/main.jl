@@ -38,7 +38,7 @@ mcfp = Model(GLPK.Optimizer)
 
 n = d1.N_vertex
 
-@variable(mcfp, x[1:n,1:n], Int) #ok
+@variable(mcfp, x[1:n,1:n] >= 0) #ok
 #println(x)
 # capacity  --------- taok
 for i in 1:n
@@ -57,7 +57,7 @@ for i in 1:n
     @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == d1.max_possible_flow[i])
   elseif i == d1.end_node
     #println("end $i")
-    max_end_flow = 0
+    global max_end_flow = 0
     for node in d1.start_nodes
       max_end_flow += d1.max_possible_flow[node]
     end
@@ -69,17 +69,16 @@ for i in 1:n
   end
 end
 
-for i in 1:n
-  @constraint(mcfp, x[i,i] == 0)
-end
+# for i in 1:n
+#   @constraint(mcfp, x[i,i] == 0)
+# end
 
 #@objective(mcfp, Min, sum(x[i,j] * costs[i,j] for i = 1:n, j = 1:n))
 #println(sum(costs[i,j] * x[i,j] for i in 1:n, j in 1:n))
 @objective(mcfp, Min, sum(costs[i,j] * x[i,j] for i in 1:n, j in 1:n))
 
+#println(mcfp)
 
 JuMP.optimize!(mcfp)
-@show JuMP.termination_status(mcfp) == MOI.OPTIMAL
-
-@show objective_value(mcfp)
-@show value.(x)
+@show JuMP.termination_status(mcfp)
+println("Max Flow = ", max_end_flow - objective_value(mcfp))

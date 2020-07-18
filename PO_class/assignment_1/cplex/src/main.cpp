@@ -11,12 +11,6 @@ int main(int argc, char* argv[]){
 	}
 	Data d1(argv[1]);
 	d1.pfcm_convertion();
-	// for(int i = 0; i < d1.getNVertex(); i++){
-	// 	for(int j = 0; j < d1.getNVertex(); j++){
-	// 		std::cout << d1.getEdgeCapacity(i,j) << " ";
-	// 	}
-	// 	std::cout << std::endl;
-	// }
 
 	solve(&d1);
 
@@ -29,8 +23,6 @@ void solve(Data *d1){
     
     int max_flow = 0;
 
-    // Initializing the array x_ij that represents the flow
-    // from i to j
 	IloArray < IloNumVarArray > x(env,d1->getNVertex());
 	for(int i = 0; i < d1->getNVertex(); i++)
     {

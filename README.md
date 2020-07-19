@@ -22,7 +22,11 @@
 
 ---
 ## Setup
-In this repository we are using Cplex. Cplex is and IBM software. If you have an institutional email and is currently enroled in a university you can get the student license for free. Make sure to create an account in this <a href="https://my15.digitalexperience.ibm.com/b73a5759-c6a6-4033-ab6b-d9d4f9a6d65b/dxsites/151914d1-03d2-48fe-97d9-d21166848e65/home">site</a> with your institutional email. After setting up an account follow these steps:
+In this repository we are using Cplex, GLPK, Or-tools and Gurobi. 
+
+### Cplex
+
+Cplex is and IBM software. If you have an institutional email and is currently enroled in a university you can get the student license for free. Make sure to create an account in this <a href="https://my15.digitalexperience.ibm.com/b73a5759-c6a6-4033-ab6b-d9d4f9a6d65b/dxsites/151914d1-03d2-48fe-97d9-d21166848e65/home">site</a> with your institutional email. After setting up an account follow these steps:
 * download Cplex in this <a href="https://my15.digitalexperience.ibm.com/b73a5759-c6a6-4033-ab6b-d9d4f9a6d65b/dxsites/151914d1-03d2-48fe-97d9-d21166848e65/technology/data-science">site</a> ( Go to **technology** -> **Data Science** -> **ILOG CPLEX Optimization Studio**)
     * This will open a pop up with the software versions. The one used in this repository is **IBM ILOG CPLEX Optimization Studio V12.10 for Linux x86-64 Multilingual (CC439ML ) [637 MB]**
     * Check the tickbox of the Studio presentend above and then just download it as below. 

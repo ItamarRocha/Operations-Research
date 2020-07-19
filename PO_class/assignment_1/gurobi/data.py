@@ -68,21 +68,21 @@ class Data:
 
         # Dict to set demands
         inflow_dist = {}
-        for i in range(self.t+1):
+        for i in range(self.n+1):
             if i == 0:
                 pass
             
             elif i == self.s:
-                inflow_dist[(self.arch_data.iloc[i].commodity, i)] = int(self.max_demand)
+                inflow_dist[(self.commodity, i)] = int(self.max_demand)
                 
             elif i == self.t:
                 
-                inflow_dist[(self.arch_data.iloc[i].commodity, i)] = -int(self.max_demand)
+                inflow_dist[(self.commodity, i)] = -int(self.max_demand)
             else:
-                inflow_dist[(self.arch_data.iloc[i].commodity, i)] = 0
+                inflow_dist[(self.commodity, i)] = 0
 
         # Base data ## Solution ###############################################################################################################################
-        commodities = ['Commodity']
+        commodities = [self.commodity]
         nodes = range(self.s, self.t+1)
 
         arcs, capacity = gp.multidict(dist)

@@ -46,23 +46,21 @@ class Data:
                 if i in i_s and i not in j_s:
                     self.srcs.append(i)
             
-            '''self.max_demand = 0
+            self.max_demand = 0
             for i in range(len(self.arch_data)):
                 if self.arch_data.iloc[i].i in self.srcs:
-                    self.max_demand += self.arch_data.iloc[i].c'''
+                    self.max_demand += self.arch_data.iloc[i].c
             
-            self.offers = []
+            self.offers = {}
             for src in self.srcs:
                 offer = 0
+                
                 for i in range(len(self.arch_data)):
                     if self.arch_data.iloc[i].i == src:
                         offer += self.arch_data.iloc[i].c
                         
-                self.offers.append(offer)
-            
-            self.max_demand = 0
-            for i in self.offers:
-                self.max_demand += i
+                self.offers[src] = offer
+                        
                 
             file.close()
 
@@ -89,7 +87,7 @@ class Data:
             dist[self.arch_data.iloc[i].archs] = self.arch_data.iloc[i].c.astype(int)
         
         for src in self.srcs:
-            dist[(self.s, self.t)] = GRB.INFINITY
+            dist[(src, self.t)] = GRB.INFINITY
 
         # Dict to set demands
         inflow_dist = {}
@@ -99,7 +97,7 @@ class Data:
             
             elif i in self.srcs:
                 for src in self.srcs:
-                    inflow_dist[(self.commodity, src)] = int(self.offers[src-1])
+                    inflow_dist[(self.commodity, src)] = int(self.offers[src])
                 
             elif i == self.t:
                 

@@ -3,6 +3,7 @@ import numpy as np
 import gurobipy as gp
 from gurobipy import GRB
 import re
+import time
 
 
 
@@ -109,7 +110,12 @@ class Data:
                 for h in commodities for j in nodes), "node")
 
         # Compute optimal solution
+        start = time.clock()
         m.optimize()
+        stop = time.clock()
+
+        timer = stop - start
+        timer = timer * 1000
 
         z = 0
         # Print solution
@@ -124,6 +130,7 @@ class Data:
                         print('%s -> %s: %g' % (i, j, solution[h, i, j]))
 
         print(f'\nMaximum Flow for the instace: {int(z)}')
+        print(f'Execution Time: {round(timer,3)} ms')
 
 
 

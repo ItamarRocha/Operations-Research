@@ -11,6 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// EXEMPLO ADAPTADO
+// Usado somente pra testes, não é compilado enquanto estiver com a extensão .cc
+
 #include "ortools/graph/min_cost_flow.h"
 #include "ortools/base/logging.h"
 #include "data.h"

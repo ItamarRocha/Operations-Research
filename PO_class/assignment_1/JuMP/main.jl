@@ -1,8 +1,5 @@
 using JuMP
 using GLPK
-using LinearAlgebra
-import MathOptInterface # Replaces MathProgBase
-const MOI = MathOptInterface
 include("Data.jl")
 
 # Int8: -128 -> 127

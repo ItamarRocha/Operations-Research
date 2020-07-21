@@ -1,5 +1,7 @@
 #include "../include/Data.hpp"
 #include <ilcplex/ilocplex.h>
+#include <chrono> 
+using namespace std::chrono; 
 
 void solve(Data* d1);
 
@@ -92,11 +94,17 @@ void solve(Data *d1){
 
     IloCplex mfp(model);
 
+	auto start = high_resolution_clock::now(); 
+
     try{
         mfp.solve();
     }catch(...){
         std::cout << "deu ruim" << std::endl;
     }
+    auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start); 
+	  
+	std::cout << "duration = " << duration.count() << std::endl; 
 
 	std::cout << "status:" << mfp.getStatus() << std::endl;
     std::cout << "Objective function:" << mfp.getObjValue() << std::endl;

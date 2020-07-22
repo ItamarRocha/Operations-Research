@@ -53,41 +53,35 @@ void solve(Data *d1){
     model.add(IloMinimize(env,FO)); // we want to minmize it
 
 
-    for(int i = 0; i < d1->getNVertex(); i++){ // sum 0 constraint
+    for(int i = 0; i < d1->getNVertex(); i++){
 
         IloExpr Constraint1(env);
         IloExpr Constraint2(env);
-        //std::cout << std::endl;
+
         for(int j = 0; j < d1->getNVertex(); j++){
             Constraint1 += x[i][j];
-            Constraint1 -= x[j][i]; // sum 0 constraint
+            Constraint1 -= x[j][i]; // conservation/ offer/ demand constraint
 
-            //std::cout << "x[" << i + 1 << "][" << j + 1 <<"] = " << d1->getEdgeCapacity(i,j) << std::endl;
             Constraint2 = x[i][j] - d1->getEdgeCapacity(i,j); // capacity constraint
             IloRange r2 = (Constraint2 <= 0); // nunca pode exceder a capacidade
             model.add(r2);
 
-            //std::cout << "+ x[" << i + 1 << "][" << j + 1 <<"] - x["<< j + 1<< "][" << i + 1<< "] "; 
-
         }
         if(start_nodes.find(i) != start_nodes.end()){
-        	//std::cout <<"maxflow "<< d1->getMaxFlow(i) << std::endl;
-            //1std::cout << " = " << d1->getMaxFlow(i) << std::endl;
+
             IloRange r = (Constraint1 == d1->getMaxFlow(i)); // limits the flow on each initial node
             model.add(r);
         }else if( i == d1->getEndNode()){
 
         	for(auto start_node: start_nodes){
-	           	max_flow += d1->getMaxFlow(start_node); //limits to the maximum flow in the exit node which is the sum of the flows 
+	           	max_flow += d1->getMaxFlow(start_node); //limits to the maximum flow in the sink node which is the sum of the flows 
             }
-            //std::cout << " = " << max_flow * -1 << std::endl; 
             IloRange r = (Constraint1 == max_flow* -1);
         	model.add(r);
     	
         }else{
-            //std::cout << " = 0" << std::endl;
             IloRange r = (Constraint1 == 0);
-            model.add(r); //any transhipment node must sum 0
+            model.add(r); //every transhipment node must sum 0
         }
     }
 

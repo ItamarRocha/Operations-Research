@@ -6,5 +6,5 @@
 
 ## Executing Example
 ```bash
-> ./pfm ../material/instance1.txt
+> ./pfm ../material/exercicio.txt
 ```

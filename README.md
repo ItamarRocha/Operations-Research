@@ -47,6 +47,12 @@ chmod +x downloaded_file.bin
 * When testing make sure to check if the version in the makefile checks with the one you have installed.
 
 * You can also install python Cplex. Instructions will come with the folder you have downloaded
+
+### GLPK
+* [here](https://github.com/ItamarRocha/Operations-Research/blob/master/PO_class/assignment_1/JuMP/README.md)
+
+### GUROBI
+* [here](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/assignment_1/gurobi)
 ---
 
 ## Code

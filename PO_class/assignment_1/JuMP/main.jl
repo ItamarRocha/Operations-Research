@@ -74,6 +74,6 @@ function solver(filepath)
   @time solve_mcfp(mcfp)
 end
 
-solver("../material/instance1.txt")
 solver(filepath)
-solver("../material/instance1.txt")
+solver(filepath)
+solver(filepath)

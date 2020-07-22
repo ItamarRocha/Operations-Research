@@ -6,5 +6,9 @@
 
 ## Executing Example
 ```bash
-> ./pfm ../material/instance1.txt
+> make
+```
+* After compiling, execute the code with the path to the instance
+```bash
+> ./pfm ../material/exercicio.txt
 ```

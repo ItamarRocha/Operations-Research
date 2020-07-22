@@ -65,7 +65,6 @@ class Data:
             file.close()
 
     def gurobi_solver(self):
-
         # Get Archs info for initializing gurobi dict
         self.arch_data['archs'] = list(zip(self.arch_data.i.astype(int), self.arch_data.j.astype(int)))
 

@@ -29,10 +29,15 @@ void SolveMinCostFlow(Data &data) {
 
 	// Alocando o vetor dos nos, que sao um par da forma (indice, oferta/demanda)
     int supplies[data.N_vertex] = {0};
+	int F = 0;
 
-    // Atribuindo a oferta/demanda F para os nos inicial e final
-    supplies[data.initial_node] = data.max_possible_flow[data.initial_node];
-    supplies[data.end_node] = -data.max_possible_flow[data.initial_node];
+    // Atribuindo a oferta/demanda F para os nos iniciais e final
+	for(auto node : data.start_nodes){
+		supplies[node] = data.max_possible_flow[node];
+    	F += supplies[node];
+	}
+
+    supplies[data.end_node] = -F;
 
 	// [START variables]
 	const double infinity = solver.infinity();
@@ -40,7 +45,7 @@ void SolveMinCostFlow(Data &data) {
     int arc_index = 0;
 
     // Alocando o vetor de arcos
-    Arc arcs[data.N_edges + 1];
+    Arc arcs[data.N_edges + data.start_nodes.size()];
 
     // Percorrendo a matriz custos e guardando os arcos
     for (int i = 0; i < data.capacity.size(); i++){
@@ -53,8 +58,10 @@ void SolveMinCostFlow(Data &data) {
     }
 
     // Definindo o arco imaginário
-	sprintf(var_name, "x%d_%d", data.initial_node+1, data.end_node+1);
-    arcs[arc_index] = {{data.initial_node, data.end_node}, solver.MakeIntVar(0.0, infinity, var_name), 1};
+	for(auto node : data.start_nodes){
+		sprintf(var_name, "x%d_%d", node+1, data.end_node+1);
+		arcs[arc_index++] = {{node, data.end_node}, solver.MakeIntVar(0.0, infinity, var_name), 1};
+	}
 
 	LOG(INFO) << "Number of variables = " << solver.NumVariables();
 	// [END variables]
@@ -63,7 +70,7 @@ void SolveMinCostFlow(Data &data) {
 	MPConstraint* constraints[data.N_vertex];
 	for (int i = 0; i < data.N_vertex; i++){
 		constraints[i] = solver.MakeRowConstraint(supplies[i], supplies[i]);
-		for (int j = 0; j <= data.N_edges; j++){
+		for (int j = 0; j < data.N_edges + data.start_nodes.size(); j++){
 			if (arcs[j].nodes.first == i)
 				constraints[i]->SetCoefficient(arcs[j].flow_var, 1);
 			if (arcs[j].nodes.second == i)
@@ -76,26 +83,32 @@ void SolveMinCostFlow(Data &data) {
 	// [START objective]
 	// Objective function: Min SUM Xij*Cij.
 	MPObjective* const objective = solver.MutableObjective();
-	for (int i = 0; i <= data.N_edges; i++)
+	for (int i = 0; i < data.N_edges + data.start_nodes.size(); i++)
 		objective->SetCoefficient(arcs[i].flow_var, arcs[i].cost);
 	objective->SetMinimization();
 	// [END objective]
 
 	// [START solve]
+	std::chrono::high_resolution_clock::time_point t0, t1;
+
+	t0 = std::chrono::high_resolution_clock::now();
 	const MPSolver::ResultStatus result_status = solver.Solve();
+	t1 = std::chrono::high_resolution_clock::now();
 	// Check that the problem has an optimal solution.
 	if (result_status != MPSolver::OPTIMAL) {
 		LOG(FATAL) << "The problem does not have an optimal solution!";
 	}
 	// [END solve]
-
+	
 	// [START print_solution]
 	int max_flow = 0;
 	LOG(INFO) << "Solution:";
 	LOG(INFO) << "Optimal objective value = " << objective->Value();
+	LOG(INFO) << "Solved in: " << std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count() << " us"; 
 
-	for(int i = 0; i <= data.N_edges; i++){
-		LOG(INFO) << arcs[i].flow_var->name() << " = " << arcs[i].flow_var->solution_value();
+	for(int i = 0; i < data.N_edges + data.start_nodes.size(); i++){
+		if(arcs[i].flow_var->solution_value() > 0)
+			LOG(INFO) << arcs[i].flow_var->name() << " = " << arcs[i].flow_var->solution_value();
 		if(arcs[i].nodes.second == data.end_node && !arcs[i].cost)
 			max_flow += arcs[i].flow_var->solution_value();
 	}

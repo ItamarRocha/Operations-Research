@@ -47,6 +47,12 @@ chmod +x downloaded_file.bin
 * When testing make sure to check if the version in the makefile checks with the one you have installed.
 
 * You can also install python Cplex. Instructions will come with the folder you have downloaded
+
+### GLPK
+* [here](https://github.com/ItamarRocha/Operations-Research/blob/master/PO_class/assignment_1/JuMP/README.md)
+
+### GUROBI
+* [here](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/assignment_1/gurobi)
 ---
 
 ## Code
@@ -54,7 +60,7 @@ Here are listed some of the codes presented in this repository:
 > Algos and Operations Research class exercises
 * [**Exercise solution list 1-3 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/list1-3)
 * [**Exercise solution list 4 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/list4)
-* [**Assignment 1 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/assignment_1)
+* [**Assignment 1 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/assignment_1) **-> done with [Jpvt](https://github.com/jpvt) and [Wallace](https://github.com/joallace)**
 * [**Bin packing problem**](https://github.com/ItamarRocha/Operations-Research/tree/master/algos/binpacking)
 * [**Knapsack 0-1 problem**](https://github.com/ItamarRocha/Operations-Research/tree/master/algos/knapsack-01)
 * [**Simple problems implementation**](https://github.com/ItamarRocha/Operations-Research/tree/master/algos/cplex_problems/intro)

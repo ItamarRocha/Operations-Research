@@ -1,4 +1,6 @@
-# Executing
+## Julia Implementation
+
+# Setup
 
 * Open Julia on your terminal
 ```
@@ -21,4 +23,9 @@ Pkg.add("JuMP")
 * Install GLPK Optimizer
 ```
 Pkg.add("GLPK")
+```
+# Executing
+* execute the file with the path to the instance
+```
+julia main.jl ../material/questao2.txt
 ```

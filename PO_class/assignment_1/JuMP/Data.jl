@@ -52,7 +52,7 @@ export Data
 
       for element in vertices2
         if element in vertices1
-          filter!(e->e!=element,vertices1)
+          filter!(e->e!=element,vertices1) #get all the initial_nodes
         end
       end
 
@@ -64,7 +64,7 @@ export Data
         for j in 1:d1.N_vertex
           d1.max_possible_flow[i] += capacity[i,j]
         end
-        capacity[i,d1.end_node] = d1.max_possible_flow[i] #pfcm
+        capacity[i,d1.end_node] = d1.max_possible_flow[i] #creates the new edges
       end
     end
 

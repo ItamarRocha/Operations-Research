@@ -46,7 +46,7 @@ function solver(filepath)
     end
   end
 
-  #sum 0
+  #sum 0 // demand / offer
   for i in 1:n
     if i in d1.start_nodes
       @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == d1.max_possible_flow[i])
@@ -57,7 +57,7 @@ function solver(filepath)
       end
       @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == max_end_flow * -1)
     else
-      @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == 0) #ok tmb essa porra
+      @constraint(mcfp, sum(x[i,j] - x[j,i] for j in 1:n) == 0) 
     end
   end
 
@@ -74,6 +74,7 @@ function solver(filepath)
   @time solve_mcfp(mcfp)
 end
 
+# run 3 times to compile the func in the first one
 solver(filepath)
 solver(filepath)
 solver(filepath)

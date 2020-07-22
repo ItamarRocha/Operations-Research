@@ -27,5 +27,5 @@ Pkg.add("GLPK")
 # Executing
 * execute the file with the path to the instance
 ```
-julia main.jl ../material/questao2.txt
+julia main.jl ../material/exercicio.txt
 ```

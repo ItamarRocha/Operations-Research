@@ -30,21 +30,59 @@ int main(){
     IloEnv env;
     IloModel model(env);
     //     
-    // 2D array to store the decision variable x, that says the execution mode of the job    
-    // 
+    // 2D array to store the decision variable x, that says the order, which one preceds the other  
+    // nXn array
+    //
     IloArray < IloBoolVarArray > x(env, n);
     for(int i = 0; i < n; i++){
-        IloBoolVarArray array(env, N_WAYS);
-        X[i] = array;
+        IloBoolVarArray array(env, n);
+        x[i] = array;
     }
 
+    IloArray < IloBoolVarArray > mode(env, n);
+    for(int i = 0; i < n; i++){
+        IloBoolVarArray array(env, N_WAYS);
+        mode[i] = array;
+    }
+
+    IloArray < IloNumVarArray > c(env,n);
+
+    IloBoolVar isGreaterThanD(env);
     // 
-    //  
+    //  FO
     // 
     
+    IloExpr FO(env);
 
+    for(int i = 0; i < n; i++){
+    	for(int j = 0; j < N_WAYS; j++){
+    		FO += mode[i][j] * days[i][j];
+    	}
 
+    }
 
+	//     
+	// Constraints
+	// 
+
+    for(int i = 0; i < n; i++){
+
+        IloExpr Constraint1(env);
+        IloExpr Constraint2(env);
+
+        for(int j = 0; j < n; j++){
+        	Constraint2 += x[j][i];
+            Constraint1 += x[i][j];
+            if(j != n-1){
+            	IloRange r = (Constraint1 == 1); // só se liga a um
+            }else{
+            	IloRange r = (Constraint1 == 0); // no final nao se liga a ning
+            }
+            IloRange r = (Constraint1 == 1); // só recebe um
+            model.add(r);
+
+        }
+   	}
     // IloCplex mfp(model);
 
     // auto start = high_resolution_clock::now(); 

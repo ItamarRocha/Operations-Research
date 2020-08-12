@@ -118,7 +118,7 @@ int main(){
    	}
 
     // CT3 -> C_j >= C_i + D_j - (1 - xij)*M
-    for(int i = 1; i < n; i++){
+    for(int i = 0; i < n; i++){
         for(int j = 1; j < n; j++){
             if(i != j){
                 int duration = 0;
@@ -150,8 +150,10 @@ int main(){
     for(int i = 0; i < n; i++){
         IloExpr Constraint5(env);
         for(int k = 0; k < N_WAYS; k++){
+        	std::cout << i << " " << k << std::endl;
             Constraint5 += mode[i][k];
         }
+        std::cout << std::endl;
         IloRange r = (Constraint5 == 1);
         model.add(r);
     }
@@ -202,19 +204,10 @@ int main(){
     }
     for(int i = 0; i < n; i++){
         for(int k = 0; k < N_WAYS; k++){
-            int result_x = solver.getValue(x[i][k]);
+            int result_x = solver.getValue(mode[i][k]);
             if(result_x)
-                std::cout << "mode[" << i << "][" << k << "] = " << result_x << std::endl;
+            	std::cout << "mode[" << i << "][" << k << "] = " << result_x << std::endl;
         }     
     }        
-        // for(int j = 0; j < d1->getNVertex(); j++){
-        //     if(solver.getValue(x[i][j]) > 0.01)
-        //         std::cout << " X[" << i + 1 << "][" << j + 1 << "] = " << solver.getValue(x[i][j]);
-        // }
-        // std::cout << std::endl;
-    
-
-    
-
     env.end();
 }

@@ -1,36 +1,30 @@
+#include "../include/Data.hpp"
 #include <ilcplex/ilocplex.h>
-#include <chrono> 
-#include <vector>
-#include <iostream>
-using namespace std::chrono;
 
-#define N_WAYS 3
+void solve(Data *data);
 
-int main(){
+int main(int argc, char* argv[]){
 
-    int n = 7; // 6 + phantom
-    int D = 100;
-    int multa = 2000;
-    int max_duration = 0 + 71 + 55 + 27 + 31 + 40 + 10;
+	if(argc != 2){
+		std::cout << "Wrong Pattern\n./planning instances/archive\n";
+		exit(1);
+	}
+	Data data(argv[1]);
 
-    std::vector<std::vector<int>> days = {{0, 0, 0},
-                                        {71, 60, 40},
-                                        {55, 50, 44},
-                                        {27, 23, 17},
-                                        {31, 26, 20},
-                                        {40, 35, 30},
-                                        {10, 9, 8}};
+	solve(&data);
 
-    std::vector<std::vector<int>> price = {{0, 0, 0},
-                                        {0, 12000, 24000},
-                                        {0, 4000, 5000},
-                                        {0, 13000, 17000},
-                                        {0, 10000, 19000},
-                                        {0, 5000, 7000},
-                                        {0, 1000, 6000}};
+	exit(0);
+}
 
+void solve(Data *data){
 
-    std::cout << days[5][2] << std::endl;
+    int n = data->getNTasks() + 1; // phantom node
+    int D = data->getNDays();
+    int multa = data->getPenalty();
+    int max_duration = data->getMaxDuration();
+
+    std::cout << n << " " << D << " " << multa << " " << max_duration << std::endl;
+
     IloEnv env;
     IloModel model(env);
     //     

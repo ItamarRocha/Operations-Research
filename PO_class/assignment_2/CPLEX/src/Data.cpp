@@ -16,6 +16,10 @@ Data::Data(char* filePath)
         exit(1);
     }
 
+    
+    N_tasks += 1; // added the phantom node
+    
+
     if(fscanf(f, "%d", &N_days) != 1)
     {
         printf("Problem while reading instance. Check Days.\n");
@@ -32,7 +36,7 @@ Data::Data(char* filePath)
     days_taken_matrix = std::vector<std::vector<int>> (N_tasks, std::vector<int>(N_MODES));
     max_duration = 0;
 
-    for(int i = 0; i < N_tasks; i++)
+    for(int i = 1; i < N_tasks; i++)
     {
         costs_matrix[i][0] = 0;
         if(fscanf(f, "%d %d %d %d %d", &days_taken_matrix[i][0], &days_taken_matrix[i][1], &costs_matrix[i][1], &days_taken_matrix[i][2], &costs_matrix[i][2]) != 5) //returns the number of sucessfully assigned input items

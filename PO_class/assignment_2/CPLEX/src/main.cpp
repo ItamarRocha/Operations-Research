@@ -118,8 +118,8 @@ int main(){
    	}
 
     // CT3 -> C_j >= C_i + D_j - (1 - xij)*M
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
+    for(int i = 1; i < n; i++){
+        for(int j = 1; j < n; j++){
             if(i != j){
                 int duration = 0;
                 IloExpr Constraint4(env);
@@ -134,6 +134,10 @@ int main(){
             }
         }
     }
+
+    model.add(x[6][0] == 1);
+    model.add(x[0][1] == 1);
+    model.add(C[0] == 0);
     // // CT4 -> precedência
     model.add(C[3] - C[1] > 0);
     model.add(C[3] - C[2] > 0);
@@ -164,7 +168,7 @@ int main(){
     Constraint7 = alfa - 100;
     model.add(beta - Constraint7 >= 0);
 
-    // CT8 Não repetir tarefa
+    // CT8 Não repetir tarefa // não se ligar a si mesmo
     for(int i = 0; i < n; i++){
         model.add(x[i][i] == 0); 
     } 
@@ -195,7 +199,14 @@ int main(){
             if(result_x)
                 std::cout << "x[" << i << "][" << j << "] = " << result_x << std::endl;
         }     
-    }    
+    }
+    for(int i = 0; i < n; i++){
+        for(int k = 0; k < N_WAYS; k++){
+            int result_x = solver.getValue(x[i][k]);
+            if(result_x)
+                std::cout << "mode[" << i << "][" << k << "] = " << result_x << std::endl;
+        }     
+    }        
         // for(int j = 0; j < d1->getNVertex(); j++){
         //     if(solver.getValue(x[i][j]) > 0.01)
         //         std::cout << " X[" << i + 1 << "][" << j + 1 << "] = " << solver.getValue(x[i][j]);

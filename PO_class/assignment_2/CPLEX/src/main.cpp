@@ -23,8 +23,6 @@ void solve(Data *data){
     int penalty = data->getPenalty();
     int max_duration = data->getMaxDuration();
 
-    //std::cout << n << " " << D << " " << penalty << " " << max_duration << std::endl;
-
     IloEnv env;
     IloModel model(env);
     //     
@@ -57,27 +55,24 @@ void solve(Data *data){
             char name[100];
             sprintf(name, "mode[%d][%d]",i ,k);
             mode[i][k].setName(name);
-            //model.add(x[i][j]);
         }
     }
 
-    IloNumVarArray C(env, N_tasks, 0, IloInfinity, ILOINT); // o dia de termino
+    IloNumVarArray C(env, N_tasks, 0, IloInfinity, ILOINT); // stores the day in which each variable ended
 
     for(int i = 0; i < N_tasks; i++){
         char name[100];
         sprintf(name, "C[%d]",i);
         C[i].setName(name);
-        //model.add(x[i][j]);
-    
     }
 
-    IloIntVar alfa(env); //tempo de término ---> somatório das durações
+    IloIntVar alfa(env); //time taken ---> sum of durations
     alfa.setName("alfa");
-    IloIntVar beta(env, 0, max_duration); //tempo de atraso ---> bounded var(lb = 0) b >= (a - 100)
+    IloIntVar beta(env, 0, max_duration); // delay ---> bounded var(lb = 0) b >= (a - 100)
     beta.setName("beta");
     // 
     //  FO
-    //  Soma dos custos + beta*penalty
+    //  costs sum + beta*penalty
     IloExpr FO(env);
 
     for(int i = 0; i < N_tasks; i++){
@@ -94,8 +89,8 @@ void solve(Data *data){
 	// // Constraints
 	// //
 
-    // CT1 -> só sai um
-    // CT2 -> só entra um
+    // CT1 -> can only connect to one
+    // CT2 -> can only be connected by one
     for(int i = 0; i < N_tasks; i++){
 
         IloExpr Constraint1(env);
@@ -110,8 +105,9 @@ void solve(Data *data){
         model.add(r1);
         model.add(r2);
    	}
-
-    //CT3 -> C_j >= C_i + D_j - (1 - xij)*M
+   	//
+    // CT3 -> C_j >= C_i + D_j - (1 - xij)*M
+    //
     for(int i = 0; i < N_tasks; i++){
         for(int j = 1; j < N_tasks; j++){
             if(i != j){
@@ -128,28 +124,27 @@ void solve(Data *data){
             }
         }
     }
-
-    // CT4 Clossing the cicle and starting the duration of node 0 to 0
+    //
+    // CT4 -> Clossing the cycle and starting the duration of node 0 to 0
     // CT5 -> precedence
-    // model.add(x[6][0] == 1);
-    // model.add(x[0][1] == 1);
-    model.add(C[0] == 0);
+    //
+    model.add(C[0] == 0); // duration to 0
     
     int last = 0;
     bool add_first_connection = true;
 
     for(auto pair: data->getPrecedences()){
     	if(add_first_connection){
-    		model.add(x[0][pair.first] == 1);
+    		model.add(x[0][pair.first] == 1); // activates vertex 0 to one of the initial nodes
     		add_first_connection = false;
     	}
     	//std::cout << pair.first << " " << pair.second << std::endl;
     	model.add(C[pair.second] - C[pair.first] > 0);
     	last = pair.second;
     }
-    model.add(x[last][0] == 1);
+    model.add(x[last][0] == 1); // activates vertex last (one of the end nodes) to 0, therefore closing the cycle
 
-    // CT6 -> só pode ter um modo
+    // CT6 -> a task can only have one node
     for(int i = 0; i < N_tasks; i++){
         IloExpr Constraint5(env);
         for(int k = 0; k < N_MODES; k++){
@@ -161,7 +156,7 @@ void solve(Data *data){
         model.add(r);
     }
 
-    // CT7 -> alfa = sum deadline * modo
+    // CT7 -> alfa = sum deadline * mode
     IloExpr Constraint6(env);
     for(int i = 0; i < N_tasks; i++){
         for(int k = 0; k < N_MODES; k++){
@@ -170,12 +165,12 @@ void solve(Data *data){
     }
     model.add(alfa == Constraint6);
 
-    // CT8 -> beta >= (alfa - 100) , lb = 0
+    // CT8 -> beta >= (alfa - 100) , beta lb = 0
     IloExpr Constraint7(env);
     Constraint7 = alfa - deadline;
     model.add(beta - Constraint7 >= 0);
 
-    // CT9 Não repetir tarefa // não se ligar a si mesmo
+    // CT9 a node cant go to itself
     for(int i = 0; i < N_tasks; i++){
         model.add(x[i][i] == 0); 
     } 
@@ -187,7 +182,7 @@ void solve(Data *data){
     try{
         solver.solve();
     }catch(...){
-        std::cout << "deu ruim" << std::endl;
+        std::cout << "exception" << std::endl;
     }
     // auto stop = high_resolution_clock::now();
     // auto duration = duration_cast<microseconds>(stop - start); 
@@ -210,7 +205,7 @@ void solve(Data *data){
     for(int i = 0; i < N_tasks; i++){
         for(int k = 0; k < N_MODES; k++){
             int result_x = solver.getValue(mode[i][k]);
-            if(result_x)
+            //if(result_x)
             	std::cout << "mode[" << i << "][" << k << "] = " << result_x << std::endl;
         }     
     }        

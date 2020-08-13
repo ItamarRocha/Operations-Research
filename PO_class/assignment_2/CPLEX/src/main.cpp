@@ -148,10 +148,10 @@ void solve(Data *data){
     for(int i = 0; i < N_tasks; i++){
         IloExpr Constraint5(env);
         for(int k = 0; k < N_MODES; k++){
-        	std::cout << i << " " << k << std::endl;
+        	//std::cout << i << " " << k << std::endl;
             Constraint5 += mode[i][k];
         }
-        std::cout << std::endl;
+        //std::cout << std::endl;
         IloRange r = (Constraint5 == 1);
         model.add(r);
     }
@@ -205,7 +205,7 @@ void solve(Data *data){
     for(int i = 0; i < N_tasks; i++){
         for(int k = 0; k < N_MODES; k++){
             int result_x = solver.getValue(mode[i][k]);
-            //if(result_x)
+            if(result_x)
             	std::cout << "mode[" << i << "][" << k << "] = " << result_x << std::endl;
         }     
     }        

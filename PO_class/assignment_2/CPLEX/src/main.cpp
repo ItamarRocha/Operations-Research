@@ -130,15 +130,24 @@ void solve(Data *data){
     }
 
     // CT4 Clossing the cicle and starting the duration of node 0 to 0
-    model.add(x[6][0] == 1);
-    model.add(x[0][1] == 1);
+    // CT5 -> precedence
+    // model.add(x[6][0] == 1);
+    // model.add(x[0][1] == 1);
     model.add(C[0] == 0);
     
-    // CT5 -> precedence
+    int last = 0;
+    bool add_first_connection = true;
+
     for(auto pair: data->getPrecedences()){
+    	if(add_first_connection){
+    		model.add(x[0][pair.first] == 1);
+    		add_first_connection = false;
+    	}
     	//std::cout << pair.first << " " << pair.second << std::endl;
     	model.add(C[pair.second] - C[pair.first] > 0);
+    	last = pair.second;
     }
+    model.add(x[last][0] == 1);
 
     // CT6 -> só pode ter um modo
     for(int i = 0; i < N_tasks; i++){

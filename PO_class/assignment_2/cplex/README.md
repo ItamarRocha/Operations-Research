@@ -10,5 +10,5 @@
 ```
 * After compiling, execute the code with the path to the instance
 ```bash
-> ./pfm ../material/exercicio.txt
+> ./planning instances/test.txt
 ```

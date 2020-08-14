@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 
 void solve(Data *data){
 
-    int N_tasks = data->getNTasks(); // phantom node
+    int N_tasks = data->getNTasks(); // imaginary node
     int deadline = data->getNDays();
     int penalty = data->getPenalty();
     int max_duration = data->getMaxDuration();
@@ -190,24 +190,35 @@ void solve(Data *data){
     // std::cout << "duration = " << duration.count() << std::endl; 
 
     std::cout << "status:" << solver.getStatus() << std::endl;
-    std::cout << "Objective function:" << solver.getObjValue() << std::endl;
+    //std::cout << "Objective function:" << solver.getObjValue() << std::endl;
     
+    int finishing_time = 0;
     for(int i = 0; i < N_tasks; i++){
         std::cout << "Duration of task " << i << " = " << solver.getValue(C[i]) << std::endl;
+        if(finishing_time < solver.getValue(C[i])){
+        	finishing_time = solver.getValue(C[i]);
+        }
     }
+
     for(int i = 0; i < N_tasks; i++){
         for(int j = 0; j < N_tasks; j++){
             int result_x = solver.getValue(x[i][j]);
             if(result_x)
-                std::cout << "x[" << i << "][" << j << "] = " << result_x << std::endl;
+                std::cout << "task " << i << " is followed by " << j << std::endl;
         }     
     }
+
+    std::vector<char*> types_of_mode = {"Normal", "Fast", "Fastest"};
+
     for(int i = 0; i < N_tasks; i++){
         for(int k = 0; k < N_MODES; k++){
             int result_x = solver.getValue(mode[i][k]);
             if(result_x)
-            	std::cout << "mode[" << i << "][" << k << "] = " << result_x << std::endl;
+            	std::cout << "task " << i << " is executed in " << types_of_mode[k] << " mode"<< std::endl;
         }     
-    }        
+    }
+
+    std::cout << "Total time taken = " << finishing_time << std::endl;
+    std::cout << "Total cost = " << solver.getObjValue() << std::endl;
     env.end();
 }

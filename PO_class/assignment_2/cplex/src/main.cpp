@@ -125,7 +125,7 @@ void solve(Data *data){
         }
     }
     //
-    // CT4 -> Clossing the cycle and starting the duration of node 0 to 0
+    // CT4 -> linking the phantom node
     // CT5 -> precedence
     //
     model.add(C[0] == 0); // duration to 0
@@ -144,7 +144,7 @@ void solve(Data *data){
     }
     model.add(x[last][0] == 1); // activates vertex last (one of the end nodes) to 0, therefore closing the cycle
 
-    // CT6 -> a task can only have one node
+    // CT6 -> a task can only have one mode
     for(int i = 0; i < N_tasks; i++){
         IloExpr Constraint5(env);
         for(int k = 0; k < N_MODES; k++){
@@ -184,10 +184,6 @@ void solve(Data *data){
     }catch(...){
         std::cout << "exception" << std::endl;
     }
-    // auto stop = high_resolution_clock::now();
-    // auto duration = duration_cast<microseconds>(stop - start); 
-      
-    // std::cout << "duration = " << duration.count() << std::endl; 
 
     std::cout << "status:" << solver.getStatus() << std::endl;
     //std::cout << "Objective function:" << solver.getObjValue() << std::endl;
@@ -220,5 +216,7 @@ void solve(Data *data){
 
     std::cout << "Total time taken = " << finishing_time << std::endl;
     std::cout << "Total cost = " << solver.getObjValue() << std::endl;
+    std::cout << "Acelerations cost = " << solver.getObjValue() - solver.getValue(beta) * 2000 << std::endl;
+    std::cout << "Fine costs = " << solver.getValue(beta)*2000 << std::endl;
     env.end();
 }

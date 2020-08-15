@@ -125,4 +125,4 @@ obj/assignment.o: src/assignment.cpp \
  include/ortools/util/optional_boolean.pb.h \
  include/ortools/linear_solver/linear_solver_callback.h \
  include/ortools/port/proto_utils.h include/google/protobuf/text_format.h \
- include/assignment_data.h
+ include/data.h

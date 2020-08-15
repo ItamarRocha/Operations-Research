@@ -20,10 +20,12 @@ Data::Data(char* file_path){
         exit(EXIT_FAILURE);
     }
 
-    if(fscanf(f, "%d", &fine_value_) != 1){
+    if(fscanf(f, "%d", &penalty_) != 1){
         std::cerr << "ERROR: Check fine value!\n";
         exit(EXIT_FAILURE);
     }
+
+    jobs_.push_back({{0, 0}, {0, 0}, {0, 0}});
 
     while(n_jobs--){
         if(fscanf(f, "%d %d %d %d %d", &buffer[0], &buffer[1], &buffer[2], &buffer[3], &buffer[4]) != 5){
@@ -41,11 +43,11 @@ Data::Data(char* file_path){
 
 void Data::print(){
     std::cout << "Deadline: " << deadline_ << "\n";
-	std::cout << "Fine value: " << fine_value_ << "\n";
+	std::cout << "Fine value: " << penalty_ << "\n";
 
 	std::cout << "\nJobs:\n";
 	for(int i = 0; i < jobs_.size(); i++)
-		std::cout << "\tNumber " << i+1 << ":{\n"
+		std::cout << "\tNumber " << i << ":{\n"
 				  << "\t\tNormal: " << jobs_[i].normal.duration << "\n"
 				  << "\t\tFast: " << jobs_[i].fast.duration << " ($"<< jobs_[i].fast.cost << ")\n"
 				  << "\t\tFastest: " << jobs_[i].fastest.duration << " ($"<< jobs_[i].fastest.cost << ")\n\t}\n";

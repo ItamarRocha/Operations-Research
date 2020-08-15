@@ -18,7 +18,7 @@ struct Job{
 class Data{
     public:
         int deadline_;
-        int fine_value_;
+        int penalty_;
         std::vector<std::pair<int, int>> precedences_;
         std::vector<Job> jobs_;
 

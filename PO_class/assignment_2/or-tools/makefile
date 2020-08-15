@@ -1,4 +1,4 @@
-EXECUTABLE = bin/max_flow
+EXECUTABLE = bin/planning
 
 INC_DIR = include
 SRC_DIR = src

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "../include/Data.hpp"
 #include <ilcplex/ilocplex.h>
 
@@ -111,7 +112,6 @@ void solve(Data *data){
     for(int i = 0; i < N_tasks; i++){
         for(int j = 1; j < N_tasks; j++){
             if(i != j){
-                int duration = 0;
                 IloExpr Constraint4(env);
                 for(int k = 0; k < N_MODES; k++){
                     Constraint4 += mode[j][k]* data->getDaysTaken(j,k);
@@ -188,13 +188,21 @@ void solve(Data *data){
     std::cout << "status:" << solver.getStatus() << std::endl;
     //std::cout << "Objective function:" << solver.getObjValue() << std::endl;
     
+    std::vector<std::pair<int,int>> solution_order;
     int finishing_time = 0;
     for(int i = 0; i < N_tasks; i++){
+        solution_order.push_back({i, solver.getValue(C[i])});
         std::cout << "Duration of task " << i << " = " << solver.getValue(C[i]) << std::endl;
         if(finishing_time < solver.getValue(C[i])){
         	finishing_time = solver.getValue(C[i]);
         }
     }
+
+    std::sort(solution_order.begin(), solution_order.end(), 
+        [](const std::pair<int, int> &j, const std::pair<int, int> &k) -> bool{
+                return j.second < k.second;
+            }
+    );
 
     for(int i = 0; i < N_tasks; i++){
         for(int j = 0; j < N_tasks; j++){
@@ -212,6 +220,10 @@ void solve(Data *data){
             if(result_x)
             	std::cout << "task " << i << " is executed in " << types_of_mode[k] << " mode"<< std::endl;
         }     
+    }
+
+    for(int i = 1; i < N_tasks; i++){
+        std::cout << "task " << solution_order[i].first << " started at day " << solution_order[i-1].second << " and finished at day " <<  solution_order[i].second << std::endl;
     }
 
     std::cout << "Total time taken = " << finishing_time << std::endl;

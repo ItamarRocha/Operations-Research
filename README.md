@@ -61,6 +61,7 @@ Here are listed some of the codes presented in this repository:
 * [**Exercise solution list 1-3 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/list1-3)
 * [**Exercise solution list 4 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/list4)
 * [**Assignment 1 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/assignment_1) **-> done with [Jpvt](https://github.com/jpvt) and [Wallace](https://github.com/joallace)**
+* [**Assignment 2 - TEOBALDO (PO)**](https://github.com/ItamarRocha/Operations-Research/tree/master/PO_class/assignment_2) **-> done with [Jpvt](https://github.com/jpvt) and [Wallace](https://github.com/joallace)**
 * [**Bin packing problem**](https://github.com/ItamarRocha/Operations-Research/tree/master/algos/binpacking)
 * [**Knapsack 0-1 problem**](https://github.com/ItamarRocha/Operations-Research/tree/master/algos/knapsack-01)
 * [**Simple problems implementation**](https://github.com/ItamarRocha/Operations-Research/tree/master/algos/cplex_problems/intro)
